@@ -28,17 +28,10 @@ jobs:
 
       - name: check codegen is up to date
         run: |
-          ls -lh subspacerelay.pb.go
-          sha256sum subspacerelay.pb.go
-          file subspacerelay.pb.go
-
           buf generate
           go mod tidy
 
-          ls -lh subspacerelay.pb.go
-          sha256sum subspacerelay.pb.go
-          file subspacerelay.pb.go
-
+          git update-index -q --really-refresh
           if ! git diff-index --quiet HEAD --; then
             echo "::error title=Code generation out of date::buf generate && go mod tidy resulted in tracked files changing"
             git diff-index HEAD --
