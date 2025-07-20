@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package nv.subspacerelay;
+
+option go_package = "github.com/nvx/subspace-relay;subspacerelaypb";
+
+import "google/protobuf/empty.proto";
+
+message Message {
+  oneof message {
+    Payload payload = 1;
+
+    google.protobuf.Empty request_client_info = 2;
+    ClientInfo client_info = 3;
+
+    Log log = 4;
+
+    // most connections are established automatically, or are driven ia external means (eg cardhopper entering a field)
+    // but some remote-driven interactions (eg emulating a card) are still initiated from the local side (eg BLE) or
+    // require setup (cardhopper emulation)
+    Reconnect reconnect = 5;
+    google.protobuf.Empty disconnect = 6;
+  }
+}
+
+enum PayloadType {
+  PAYLOAD_TYPE_UNSPECIFIED = 0;
+  // Relay device is attached to a HID reader or SAM and can exchange Artemis payloads
+  PAYLOAD_TYPE_ARTEMIS = 1;
+  // Relay device is attached to a Proxmark3 with the cardhopper standalone mode
+  // This can be used to emulate a 14443a-4 card or act as a 14443a-4 reader
+  // Payload is raw cardhopper frame
+  PAYLOAD_TYPE_CARDHOPPER = 2;
+  // Relay device is attached to a PCSC-like reader and can exchange APDUs to a smart card
+  PAYLOAD_TYPE_PCSC_READER = 3;
+  // Relay device is attached to a PCSC-like reader that supports control commands
+  PAYLOAD_TYPE_PCSC_READER_CONTROL = 5;
+  // Relay device is emulating a smart card and can respond to APDUs from a reader
+  PAYLOAD_TYPE_PCSC_CARD = 4;
+}
+
+enum ConnectionType {
+  CONNECTION_TYPE_UNSPECIFIED = 0;
+  CONNECTION_TYPE_PCSC = 1;
+  CONNECTION_TYPE_PCSC_DIRECT = 6;
+  CONNECTION_TYPE_UART = 2;
+  CONNECTION_TYPE_OSDP = 3;
+  CONNECTION_TYPE_NFC = 4;
+  CONNECTION_TYPE_BLE = 5;
+}
+
+message Payload {
+  bytes payload = 1;
+  PayloadType payload_type = 2;
+  uint32 sequence = 3;
+  // control is used for PCSC control codes, only uint16 values are valid
+  optional uint32 control = 4;
+}
+
+message Reconnect {
+  bool use_shortcut = 1;
+  bytes uid = 2;
+  bytes ats = 3;
+}
+
+message ClientInfo {
+  repeated PayloadType supported_payload_types = 1;
+  ConnectionType connection_type = 5;
+  // atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types
+  bytes atr = 2;
+  // device_name is only present when available, eg for PCSC readers or when connected to a BLE peripheral
+  string device_name = 3;
+  // device_address is only present when available, eg when connected to a BLE peripheral
+  bytes device_address = 4;
+}
+
+message Log {
+  string message = 1;
+}

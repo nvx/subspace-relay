@@ -1,0 +1,13 @@
+version: v2
+breaking:
+  use:
+    - WIRE
+  ignore:
+    - buf
+    - google
+lint:
+  use:
+    - DEFAULT
+  except:
+    - PACKAGE_VERSION_SUFFIX
+    - SERVICE_SUFFIX
