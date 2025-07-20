@@ -20,7 +20,8 @@ jobs:
         with:
           check-latest: true
 
-      - uses: bufbuild/buf-action@v1
+      - name: install buf
+        uses: bufbuild/buf-action@v1
         with:
           setup_only: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,9 +32,10 @@ jobs:
           go mod tidy
 
           if ! git diff-index --quiet HEAD --; then
+            echo "::error title=Code generation out of date::buf generate && go mod tidy resulted in tracked files changing"
+            git diff-index HEAD --
             git diff
             git status
-            echo "::error title=Code generation out of date::buf generate && go mod tidy resulted in tracked files changing"
             exit 1
           fi
           
@@ -43,6 +45,7 @@ jobs:
             exit 1
           fi
 
-      - uses: bufbuild/buf-action@v1
+      - name: buf
+        uses: bufbuild/buf-action@v1
         with:
           token: ${{ secrets.BUF_TOKEN }}
