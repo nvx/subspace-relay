@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package nv.subspacerelay;
 
-option go_package = "github.com/nvx/subspace-relay;subspacerelaypb";
-
 import "google/protobuf/empty.proto";
+
+option go_package = "github.com/nvx/subspace-relay;subspacerelaypb";
 
 message Message {
   oneof message {

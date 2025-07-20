@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: subspacerelay/subspacerelay.proto
+// source: nv/subspacerelay/subspacerelay.proto
 
 package subspacerelaypb
 
@@ -28,7 +28,9 @@ const (
 	PayloadType_PAYLOAD_TYPE_UNSPECIFIED PayloadType = 0
 	// Relay device is attached to a HID reader or SAM and can exchange Artemis payloads
 	PayloadType_PAYLOAD_TYPE_ARTEMIS PayloadType = 1
-	// Relay device is attached to a Proxmark3 with the cardhopper standalone mode to emulate a 14443a-4 card
+	// Relay device is attached to a Proxmark3 with the cardhopper standalone mode
+	// This can be used to emulate a 14443a-4 card or act as a 14443a-4 reader
+	// Payload is raw cardhopper frame
 	PayloadType_PAYLOAD_TYPE_CARDHOPPER PayloadType = 2
 	// Relay device is attached to a PCSC-like reader and can exchange APDUs to a smart card
 	PayloadType_PAYLOAD_TYPE_PCSC_READER PayloadType = 3
@@ -69,11 +71,11 @@ func (x PayloadType) String() string {
 }
 
 func (PayloadType) Descriptor() protoreflect.EnumDescriptor {
-	return file_subspacerelay_subspacerelay_proto_enumTypes[0].Descriptor()
+	return file_nv_subspacerelay_subspacerelay_proto_enumTypes[0].Descriptor()
 }
 
 func (PayloadType) Type() protoreflect.EnumType {
-	return &file_subspacerelay_subspacerelay_proto_enumTypes[0]
+	return &file_nv_subspacerelay_subspacerelay_proto_enumTypes[0]
 }
 
 func (x PayloadType) Number() protoreflect.EnumNumber {
@@ -82,7 +84,7 @@ func (x PayloadType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use PayloadType.Descriptor instead.
 func (PayloadType) EnumDescriptor() ([]byte, []int) {
-	return file_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{0}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{0}
 }
 
 type ConnectionType int32
@@ -130,11 +132,11 @@ func (x ConnectionType) String() string {
 }
 
 func (ConnectionType) Descriptor() protoreflect.EnumDescriptor {
-	return file_subspacerelay_subspacerelay_proto_enumTypes[1].Descriptor()
+	return file_nv_subspacerelay_subspacerelay_proto_enumTypes[1].Descriptor()
 }
 
 func (ConnectionType) Type() protoreflect.EnumType {
-	return &file_subspacerelay_subspacerelay_proto_enumTypes[1]
+	return &file_nv_subspacerelay_subspacerelay_proto_enumTypes[1]
 }
 
 func (x ConnectionType) Number() protoreflect.EnumNumber {
@@ -143,7 +145,7 @@ func (x ConnectionType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ConnectionType.Descriptor instead.
 func (ConnectionType) EnumDescriptor() ([]byte, []int) {
-	return file_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{1}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{1}
 }
 
 type Message struct {
@@ -163,7 +165,7 @@ type Message struct {
 
 func (x *Message) Reset() {
 	*x = Message{}
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[0]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -175,7 +177,7 @@ func (x *Message) String() string {
 func (*Message) ProtoMessage() {}
 
 func (x *Message) ProtoReflect() protoreflect.Message {
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[0]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -188,7 +190,7 @@ func (x *Message) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Message.ProtoReflect.Descriptor instead.
 func (*Message) Descriptor() ([]byte, []int) {
-	return file_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{0}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Message) GetMessage() isMessage_Message {
@@ -274,7 +276,8 @@ type Message_Log struct {
 
 type Message_Reconnect struct {
 	// most connections are established automatically, or are driven ia external means (eg cardhopper entering a field)
-	// but some remote-driven interactions (eg emulating a card) are still initiated from the local side (eg BLE)
+	// but some remote-driven interactions (eg emulating a card) are still initiated from the local side (eg BLE) or
+	// require setup (cardhopper emulation)
 	Reconnect *Reconnect `protobuf:"bytes,5,opt,name=reconnect,proto3,oneof"`
 }
 
@@ -297,7 +300,7 @@ func (*Message_Disconnect) isMessage_Message() {}
 type Payload struct {
 	state       protoimpl.MessageState `protogen:"open.v1"`
 	Payload     []byte                 `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
-	PayloadType PayloadType            `protobuf:"varint,2,opt,name=payload_type,json=payloadType,proto3,enum=subspacerelay.PayloadType" json:"payload_type,omitempty"`
+	PayloadType PayloadType            `protobuf:"varint,2,opt,name=payload_type,json=payloadType,proto3,enum=nv.subspacerelay.PayloadType" json:"payload_type,omitempty"`
 	Sequence    uint32                 `protobuf:"varint,3,opt,name=sequence,proto3" json:"sequence,omitempty"`
 	// control is used for PCSC control codes, only uint16 values are valid
 	Control       *uint32 `protobuf:"varint,4,opt,name=control,proto3,oneof" json:"control,omitempty"`
@@ -307,7 +310,7 @@ type Payload struct {
 
 func (x *Payload) Reset() {
 	*x = Payload{}
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[1]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -319,7 +322,7 @@ func (x *Payload) String() string {
 func (*Payload) ProtoMessage() {}
 
 func (x *Payload) ProtoReflect() protoreflect.Message {
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[1]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -332,7 +335,7 @@ func (x *Payload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Payload.ProtoReflect.Descriptor instead.
 func (*Payload) Descriptor() ([]byte, []int) {
-	return file_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{1}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Payload) GetPayload() []byte {
@@ -374,7 +377,7 @@ type Reconnect struct {
 
 func (x *Reconnect) Reset() {
 	*x = Reconnect{}
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[2]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -386,7 +389,7 @@ func (x *Reconnect) String() string {
 func (*Reconnect) ProtoMessage() {}
 
 func (x *Reconnect) ProtoReflect() protoreflect.Message {
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[2]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -399,7 +402,7 @@ func (x *Reconnect) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Reconnect.ProtoReflect.Descriptor instead.
 func (*Reconnect) Descriptor() ([]byte, []int) {
-	return file_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{2}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Reconnect) GetUseShortcut() bool {
@@ -425,8 +428,8 @@ func (x *Reconnect) GetAts() []byte {
 
 type ClientInfo struct {
 	state                 protoimpl.MessageState `protogen:"open.v1"`
-	SupportedPayloadTypes []PayloadType          `protobuf:"varint,1,rep,packed,name=supported_payload_types,json=supportedPayloadTypes,proto3,enum=subspacerelay.PayloadType" json:"supported_payload_types,omitempty"`
-	ConnectionType        ConnectionType         `protobuf:"varint,5,opt,name=connection_type,json=connectionType,proto3,enum=subspacerelay.ConnectionType" json:"connection_type,omitempty"`
+	SupportedPayloadTypes []PayloadType          `protobuf:"varint,1,rep,packed,name=supported_payload_types,json=supportedPayloadTypes,proto3,enum=nv.subspacerelay.PayloadType" json:"supported_payload_types,omitempty"`
+	ConnectionType        ConnectionType         `protobuf:"varint,5,opt,name=connection_type,json=connectionType,proto3,enum=nv.subspacerelay.ConnectionType" json:"connection_type,omitempty"`
 	// atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types
 	Atr []byte `protobuf:"bytes,2,opt,name=atr,proto3" json:"atr,omitempty"`
 	// device_name is only present when available, eg for PCSC readers or when connected to a BLE peripheral
@@ -439,7 +442,7 @@ type ClientInfo struct {
 
 func (x *ClientInfo) Reset() {
 	*x = ClientInfo{}
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[3]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -451,7 +454,7 @@ func (x *ClientInfo) String() string {
 func (*ClientInfo) ProtoMessage() {}
 
 func (x *ClientInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[3]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -464,7 +467,7 @@ func (x *ClientInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClientInfo.ProtoReflect.Descriptor instead.
 func (*ClientInfo) Descriptor() ([]byte, []int) {
-	return file_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{3}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ClientInfo) GetSupportedPayloadTypes() []PayloadType {
@@ -511,7 +514,7 @@ type Log struct {
 
 func (x *Log) Reset() {
 	*x = Log{}
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[4]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -523,7 +526,7 @@ func (x *Log) String() string {
 func (*Log) ProtoMessage() {}
 
 func (x *Log) ProtoReflect() protoreflect.Message {
-	mi := &file_subspacerelay_subspacerelay_proto_msgTypes[4]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -536,7 +539,7 @@ func (x *Log) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Log.ProtoReflect.Descriptor instead.
 func (*Log) Descriptor() ([]byte, []int) {
-	return file_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{4}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Log) GetMessage() string {
@@ -546,25 +549,25 @@ func (x *Log) GetMessage() string {
 	return ""
 }
 
-var File_subspacerelay_subspacerelay_proto protoreflect.FileDescriptor
+var File_nv_subspacerelay_subspacerelay_proto protoreflect.FileDescriptor
 
-const file_subspacerelay_subspacerelay_proto_rawDesc = "" +
+const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\n" +
-	"!subspacerelay/subspacerelay.proto\x12\rsubspacerelay\x1a\x1bgoogle/protobuf/empty.proto\"\xec\x02\n" +
-	"\aMessage\x122\n" +
-	"\apayload\x18\x01 \x01(\v2\x16.subspacerelay.PayloadH\x00R\apayload\x12H\n" +
-	"\x13request_client_info\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x11requestClientInfo\x12<\n" +
-	"\vclient_info\x18\x03 \x01(\v2\x19.subspacerelay.ClientInfoH\x00R\n" +
-	"clientInfo\x12&\n" +
-	"\x03log\x18\x04 \x01(\v2\x12.subspacerelay.LogH\x00R\x03log\x128\n" +
-	"\treconnect\x18\x05 \x01(\v2\x18.subspacerelay.ReconnectH\x00R\treconnect\x128\n" +
+	"$nv/subspacerelay/subspacerelay.proto\x12\x10nv.subspacerelay\x1a\x1bgoogle/protobuf/empty.proto\"\xf8\x02\n" +
+	"\aMessage\x125\n" +
+	"\apayload\x18\x01 \x01(\v2\x19.nv.subspacerelay.PayloadH\x00R\apayload\x12H\n" +
+	"\x13request_client_info\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x11requestClientInfo\x12?\n" +
+	"\vclient_info\x18\x03 \x01(\v2\x1c.nv.subspacerelay.ClientInfoH\x00R\n" +
+	"clientInfo\x12)\n" +
+	"\x03log\x18\x04 \x01(\v2\x15.nv.subspacerelay.LogH\x00R\x03log\x12;\n" +
+	"\treconnect\x18\x05 \x01(\v2\x1b.nv.subspacerelay.ReconnectH\x00R\treconnect\x128\n" +
 	"\n" +
 	"disconnect\x18\x06 \x01(\v2\x16.google.protobuf.EmptyH\x00R\n" +
 	"disconnectB\t\n" +
-	"\amessage\"\xa9\x01\n" +
+	"\amessage\"\xac\x01\n" +
 	"\aPayload\x12\x18\n" +
-	"\apayload\x18\x01 \x01(\fR\apayload\x12=\n" +
-	"\fpayload_type\x18\x02 \x01(\x0e2\x1a.subspacerelay.PayloadTypeR\vpayloadType\x12\x1a\n" +
+	"\apayload\x18\x01 \x01(\fR\apayload\x12@\n" +
+	"\fpayload_type\x18\x02 \x01(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\vpayloadType\x12\x1a\n" +
 	"\bsequence\x18\x03 \x01(\rR\bsequence\x12\x1d\n" +
 	"\acontrol\x18\x04 \x01(\rH\x00R\acontrol\x88\x01\x01B\n" +
 	"\n" +
@@ -572,11 +575,11 @@ const file_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\tReconnect\x12!\n" +
 	"\fuse_shortcut\x18\x01 \x01(\bR\vuseShortcut\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\fR\x03uid\x12\x10\n" +
-	"\x03ats\x18\x03 \x01(\fR\x03ats\"\x82\x02\n" +
+	"\x03ats\x18\x03 \x01(\fR\x03ats\"\x88\x02\n" +
 	"\n" +
-	"ClientInfo\x12R\n" +
-	"\x17supported_payload_types\x18\x01 \x03(\x0e2\x1a.subspacerelay.PayloadTypeR\x15supportedPayloadTypes\x12F\n" +
-	"\x0fconnection_type\x18\x05 \x01(\x0e2\x1d.subspacerelay.ConnectionTypeR\x0econnectionType\x12\x10\n" +
+	"ClientInfo\x12U\n" +
+	"\x17supported_payload_types\x18\x01 \x03(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\x15supportedPayloadTypes\x12I\n" +
+	"\x0fconnection_type\x18\x05 \x01(\x0e2 .nv.subspacerelay.ConnectionTypeR\x0econnectionType\x12\x10\n" +
 	"\x03atr\x18\x02 \x01(\fR\x03atr\x12\x1f\n" +
 	"\vdevice_name\x18\x03 \x01(\tR\n" +
 	"deviceName\x12%\n" +
@@ -597,42 +600,42 @@ const file_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\x14CONNECTION_TYPE_UART\x10\x02\x12\x18\n" +
 	"\x14CONNECTION_TYPE_OSDP\x10\x03\x12\x17\n" +
 	"\x13CONNECTION_TYPE_NFC\x10\x04\x12\x17\n" +
-	"\x13CONNECTION_TYPE_BLE\x10\x05b\x06proto3"
+	"\x13CONNECTION_TYPE_BLE\x10\x05B/Z-github.com/nvx/subspace-relay;subspacerelaypbb\x06proto3"
 
 var (
-	file_subspacerelay_subspacerelay_proto_rawDescOnce sync.Once
-	file_subspacerelay_subspacerelay_proto_rawDescData []byte
+	file_nv_subspacerelay_subspacerelay_proto_rawDescOnce sync.Once
+	file_nv_subspacerelay_subspacerelay_proto_rawDescData []byte
 )
 
-func file_subspacerelay_subspacerelay_proto_rawDescGZIP() []byte {
-	file_subspacerelay_subspacerelay_proto_rawDescOnce.Do(func() {
-		file_subspacerelay_subspacerelay_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_subspacerelay_subspacerelay_proto_rawDesc), len(file_subspacerelay_subspacerelay_proto_rawDesc)))
+func file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP() []byte {
+	file_nv_subspacerelay_subspacerelay_proto_rawDescOnce.Do(func() {
+		file_nv_subspacerelay_subspacerelay_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_nv_subspacerelay_subspacerelay_proto_rawDesc), len(file_nv_subspacerelay_subspacerelay_proto_rawDesc)))
 	})
-	return file_subspacerelay_subspacerelay_proto_rawDescData
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescData
 }
 
-var file_subspacerelay_subspacerelay_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_subspacerelay_subspacerelay_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_subspacerelay_subspacerelay_proto_goTypes = []any{
-	(PayloadType)(0),      // 0: subspacerelay.PayloadType
-	(ConnectionType)(0),   // 1: subspacerelay.ConnectionType
-	(*Message)(nil),       // 2: subspacerelay.Message
-	(*Payload)(nil),       // 3: subspacerelay.Payload
-	(*Reconnect)(nil),     // 4: subspacerelay.Reconnect
-	(*ClientInfo)(nil),    // 5: subspacerelay.ClientInfo
-	(*Log)(nil),           // 6: subspacerelay.Log
+var file_nv_subspacerelay_subspacerelay_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_nv_subspacerelay_subspacerelay_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_nv_subspacerelay_subspacerelay_proto_goTypes = []any{
+	(PayloadType)(0),      // 0: nv.subspacerelay.PayloadType
+	(ConnectionType)(0),   // 1: nv.subspacerelay.ConnectionType
+	(*Message)(nil),       // 2: nv.subspacerelay.Message
+	(*Payload)(nil),       // 3: nv.subspacerelay.Payload
+	(*Reconnect)(nil),     // 4: nv.subspacerelay.Reconnect
+	(*ClientInfo)(nil),    // 5: nv.subspacerelay.ClientInfo
+	(*Log)(nil),           // 6: nv.subspacerelay.Log
 	(*emptypb.Empty)(nil), // 7: google.protobuf.Empty
 }
-var file_subspacerelay_subspacerelay_proto_depIdxs = []int32{
-	3, // 0: subspacerelay.Message.payload:type_name -> subspacerelay.Payload
-	7, // 1: subspacerelay.Message.request_client_info:type_name -> google.protobuf.Empty
-	5, // 2: subspacerelay.Message.client_info:type_name -> subspacerelay.ClientInfo
-	6, // 3: subspacerelay.Message.log:type_name -> subspacerelay.Log
-	4, // 4: subspacerelay.Message.reconnect:type_name -> subspacerelay.Reconnect
-	7, // 5: subspacerelay.Message.disconnect:type_name -> google.protobuf.Empty
-	0, // 6: subspacerelay.Payload.payload_type:type_name -> subspacerelay.PayloadType
-	0, // 7: subspacerelay.ClientInfo.supported_payload_types:type_name -> subspacerelay.PayloadType
-	1, // 8: subspacerelay.ClientInfo.connection_type:type_name -> subspacerelay.ConnectionType
+var file_nv_subspacerelay_subspacerelay_proto_depIdxs = []int32{
+	3, // 0: nv.subspacerelay.Message.payload:type_name -> nv.subspacerelay.Payload
+	7, // 1: nv.subspacerelay.Message.request_client_info:type_name -> google.protobuf.Empty
+	5, // 2: nv.subspacerelay.Message.client_info:type_name -> nv.subspacerelay.ClientInfo
+	6, // 3: nv.subspacerelay.Message.log:type_name -> nv.subspacerelay.Log
+	4, // 4: nv.subspacerelay.Message.reconnect:type_name -> nv.subspacerelay.Reconnect
+	7, // 5: nv.subspacerelay.Message.disconnect:type_name -> google.protobuf.Empty
+	0, // 6: nv.subspacerelay.Payload.payload_type:type_name -> nv.subspacerelay.PayloadType
+	0, // 7: nv.subspacerelay.ClientInfo.supported_payload_types:type_name -> nv.subspacerelay.PayloadType
+	1, // 8: nv.subspacerelay.ClientInfo.connection_type:type_name -> nv.subspacerelay.ConnectionType
 	9, // [9:9] is the sub-list for method output_type
 	9, // [9:9] is the sub-list for method input_type
 	9, // [9:9] is the sub-list for extension type_name
@@ -640,12 +643,12 @@ var file_subspacerelay_subspacerelay_proto_depIdxs = []int32{
 	0, // [0:9] is the sub-list for field type_name
 }
 
-func init() { file_subspacerelay_subspacerelay_proto_init() }
-func file_subspacerelay_subspacerelay_proto_init() {
-	if File_subspacerelay_subspacerelay_proto != nil {
+func init() { file_nv_subspacerelay_subspacerelay_proto_init() }
+func file_nv_subspacerelay_subspacerelay_proto_init() {
+	if File_nv_subspacerelay_subspacerelay_proto != nil {
 		return
 	}
-	file_subspacerelay_subspacerelay_proto_msgTypes[0].OneofWrappers = []any{
+	file_nv_subspacerelay_subspacerelay_proto_msgTypes[0].OneofWrappers = []any{
 		(*Message_Payload)(nil),
 		(*Message_RequestClientInfo)(nil),
 		(*Message_ClientInfo)(nil),
@@ -653,23 +656,23 @@ func file_subspacerelay_subspacerelay_proto_init() {
 		(*Message_Reconnect)(nil),
 		(*Message_Disconnect)(nil),
 	}
-	file_subspacerelay_subspacerelay_proto_msgTypes[1].OneofWrappers = []any{}
+	file_nv_subspacerelay_subspacerelay_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_subspacerelay_subspacerelay_proto_rawDesc), len(file_subspacerelay_subspacerelay_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_nv_subspacerelay_subspacerelay_proto_rawDesc), len(file_nv_subspacerelay_subspacerelay_proto_rawDesc)),
 			NumEnums:      2,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_subspacerelay_subspacerelay_proto_goTypes,
-		DependencyIndexes: file_subspacerelay_subspacerelay_proto_depIdxs,
-		EnumInfos:         file_subspacerelay_subspacerelay_proto_enumTypes,
-		MessageInfos:      file_subspacerelay_subspacerelay_proto_msgTypes,
+		GoTypes:           file_nv_subspacerelay_subspacerelay_proto_goTypes,
+		DependencyIndexes: file_nv_subspacerelay_subspacerelay_proto_depIdxs,
+		EnumInfos:         file_nv_subspacerelay_subspacerelay_proto_enumTypes,
+		MessageInfos:      file_nv_subspacerelay_subspacerelay_proto_msgTypes,
 	}.Build()
-	File_subspacerelay_subspacerelay_proto = out.File
-	file_subspacerelay_subspacerelay_proto_goTypes = nil
-	file_subspacerelay_subspacerelay_proto_depIdxs = nil
+	File_nv_subspacerelay_subspacerelay_proto = out.File
+	file_nv_subspacerelay_subspacerelay_proto_goTypes = nil
+	file_nv_subspacerelay_subspacerelay_proto_depIdxs = nil
 }

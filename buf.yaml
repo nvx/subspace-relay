@@ -11,3 +11,6 @@ lint:
   except:
     - PACKAGE_VERSION_SUFFIX
     - SERVICE_SUFFIX
+modules:
+  - path: .
+    name: buf.build/nvxx/subspace-relay
