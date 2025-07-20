@@ -31,7 +31,7 @@ jobs:
           go mod tidy
 
           if ! git diff-files --quiet; then
-            git diff-files
+            git diff
             echo "::error title=Code generation out of date::buf generate && go mod tidy resulted in tracked files changing"
             exit 1
           fi
