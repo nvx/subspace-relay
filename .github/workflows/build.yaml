@@ -25,13 +25,14 @@ jobs:
           setup_only: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: check generation
+      - name: check codegen is up to date
         run: |
           buf generate
           go mod tidy
 
-          if ! git diff-files --quiet; then
+          if ! git diff-index --quiet HEAD --; then
             git diff
+            git status
             echo "::error title=Code generation out of date::buf generate && go mod tidy resulted in tracked files changing"
             exit 1
           fi
