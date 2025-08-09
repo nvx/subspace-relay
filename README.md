@@ -1,4 +1,12 @@
-# Usage
+# Subspace Relay
+
+This repo contains [protobuf](https://protobuf.dev/) definitions for transferring RFID-related packets between processes,
+for example over MQTT.
+
+There is also a Go library [go-subspace-relay](https://github.com/nvx/go-subspace-relay) that leverages this protobuf
+schema to exchange messages over MQTT with more example tools to come.
+
+# Library Usage
 
 ## Go
 The Go package can be consumed directly from GitHub with the following import:
