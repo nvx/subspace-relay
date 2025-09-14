@@ -72,6 +72,8 @@ message ClientInfo {
   string device_name = 3;
   // device_address is only present when available, eg when connected to a BLE peripheral
   bytes device_address = 4;
+  // rssi is only present when available, eg when connected to a BLE peripheral
+  sint32 rssi = 6;
 }
 
 message Log {
