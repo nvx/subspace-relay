@@ -367,10 +367,12 @@ func (x *Payload) GetControl() uint32 {
 }
 
 type Reconnect struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UseShortcut   bool                   `protobuf:"varint,1,opt,name=use_shortcut,json=useShortcut,proto3" json:"use_shortcut,omitempty"`
-	Uid           []byte                 `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
-	Ats           []byte                 `protobuf:"bytes,3,opt,name=ats,proto3" json:"ats,omitempty"`
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	UseShortcut bool                   `protobuf:"varint,1,opt,name=use_shortcut,json=useShortcut,proto3" json:"use_shortcut,omitempty"`
+	Uid         []byte                 `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
+	Ats         []byte                 `protobuf:"bytes,3,opt,name=ats,proto3" json:"ats,omitempty"`
+	// some card emulators may need an explicit list of AIDs to register, ignored otherwise
+	AidList       [][]byte `protobuf:"bytes,4,rep,name=aid_list,json=aidList,proto3" json:"aid_list,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -422,6 +424,13 @@ func (x *Reconnect) GetUid() []byte {
 func (x *Reconnect) GetAts() []byte {
 	if x != nil {
 		return x.Ats
+	}
+	return nil
+}
+
+func (x *Reconnect) GetAidList() [][]byte {
+	if x != nil {
+		return x.AidList
 	}
 	return nil
 }
@@ -580,11 +589,12 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\bsequence\x18\x03 \x01(\rR\bsequence\x12\x1d\n" +
 	"\acontrol\x18\x04 \x01(\rH\x00R\acontrol\x88\x01\x01B\n" +
 	"\n" +
-	"\b_control\"R\n" +
+	"\b_control\"m\n" +
 	"\tReconnect\x12!\n" +
 	"\fuse_shortcut\x18\x01 \x01(\bR\vuseShortcut\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\fR\x03uid\x12\x10\n" +
-	"\x03ats\x18\x03 \x01(\fR\x03ats\"\x9c\x02\n" +
+	"\x03ats\x18\x03 \x01(\fR\x03ats\x12\x19\n" +
+	"\baid_list\x18\x04 \x03(\fR\aaidList\"\x9c\x02\n" +
 	"\n" +
 	"ClientInfo\x12U\n" +
 	"\x17supported_payload_types\x18\x01 \x03(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\x15supportedPayloadTypes\x12I\n" +

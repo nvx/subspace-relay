@@ -1,0 +1,7 @@
+name: subspacerelay
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  protobuf: ^4.1.0

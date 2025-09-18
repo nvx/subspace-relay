@@ -61,6 +61,8 @@ message Reconnect {
   bool use_shortcut = 1;
   bytes uid = 2;
   bytes ats = 3;
+  // some card emulators may need an explicit list of AIDs to register, ignored otherwise
+  repeated bytes aid_list = 4;
 }
 
 message ClientInfo {

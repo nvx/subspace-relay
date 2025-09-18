@@ -1,0 +1,7 @@
+.idea
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+# only library packages should ignore this
+pubspec.lock
