@@ -10,8 +10,20 @@ message Message {
   oneof message {
     Payload payload = 1;
 
-    google.protobuf.Empty request_client_info = 2;
-    ClientInfo client_info = 3;
+    // Load an emulation shortcut config into a supported card emulation relay
+    // Shortcuts preempt a cAPDU from the reader with a given rAPDU response to reduce round trip delays
+    // if multiple shortcuts match precedence of which shortcut is used is determined by the following
+    // 1. chained_next from the previously matched cAPDU
+    // 2. non-persistent shortcuts are checked before persistent shortcuts
+    // 3. chained_next fields containing multiple EmulationShortcuts will check earlier array entries first
+    // 4. non-chained shortcuts with explicit cAPDU headers are checked before wildcard header matches
+    // 5. non-chained shortcuts with explicit data matches are checked before wildcard data matches
+    // 6. non-chained older shortcuts preferred over newer - this may not always hold true due to network conditions
+    // shortcuts are flushed when disconnect or reconnect messages are received by a relay
+    EmulationShortcut emulation_shortcut = 7;
+
+    google.protobuf.Empty request_relay_info = 2;
+    RelayInfo relay_info = 3;
 
     Log log = 4;
 
@@ -57,15 +69,36 @@ message Payload {
   optional uint32 control = 4;
 }
 
+message EmulationShortcut {
+  // cAPDU headers to match each value must be exactly 4 bytes (CLA INS P1 P2)
+  // if omitted will wildcard match any header
+  repeated bytes capdu_header = 1;
+  // data to match
+  // if omitted will wildcard any data value
+  repeated bytes capdu_data = 2;
+  // rAPDU to respond to the matching shortcut cAPDU
+  bytes rapdu = 3;
+  // if false after the first match the shortcut is forgotten
+  // if true it will remain until disconnect or reconnect is received
+  // persistent should only be specified for non rpc replies
+  // if the persistent flag is present on chained_next fields that set of shortcuts will persist until it no longer matches
+  bool persistent = 4;
+  // if true the matching cAPDU received from the reader will be will be sent as a Payload back to the client
+  bool send_capdu = 5;
+  // expect the following as the immediate next shortcut to occur to enable response chaining
+  // if the shortcut does not match the next cAPDU it is discarded
+  repeated EmulationShortcut chained_next = 6;
+}
+
 message Reconnect {
-  bool use_shortcut = 1;
+  bool use_shortcut = 1 [deprecated = true];
   bytes uid = 2;
   bytes ats = 3;
-  // some card emulators may need an explicit list of AIDs to register, ignored otherwise
+  // some card emulators may need an explicit list of AIDs to register (eg Mobile HCE), ignored otherwise
   repeated bytes aid_list = 4;
 }
 
-message ClientInfo {
+message RelayInfo {
   repeated PayloadType supported_payload_types = 1;
   ConnectionType connection_type = 5;
   // atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types
@@ -76,6 +109,8 @@ message ClientInfo {
   bytes device_address = 4;
   // rssi is only present when available, eg when connected to a BLE peripheral
   sint32 rssi = 6;
+  // true iff EmulationShortcut messages are supported
+  bool supports_shortcut = 7;
 }
 
 message Log {

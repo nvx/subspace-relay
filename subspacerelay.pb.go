@@ -153,8 +153,9 @@ type Message struct {
 	// Types that are valid to be assigned to Message:
 	//
 	//	*Message_Payload
-	//	*Message_RequestClientInfo
-	//	*Message_ClientInfo
+	//	*Message_EmulationShortcut
+	//	*Message_RequestRelayInfo
+	//	*Message_RelayInfo
 	//	*Message_Log
 	//	*Message_Reconnect
 	//	*Message_Disconnect
@@ -209,19 +210,28 @@ func (x *Message) GetPayload() *Payload {
 	return nil
 }
 
-func (x *Message) GetRequestClientInfo() *emptypb.Empty {
+func (x *Message) GetEmulationShortcut() *EmulationShortcut {
 	if x != nil {
-		if x, ok := x.Message.(*Message_RequestClientInfo); ok {
-			return x.RequestClientInfo
+		if x, ok := x.Message.(*Message_EmulationShortcut); ok {
+			return x.EmulationShortcut
 		}
 	}
 	return nil
 }
 
-func (x *Message) GetClientInfo() *ClientInfo {
+func (x *Message) GetRequestRelayInfo() *emptypb.Empty {
 	if x != nil {
-		if x, ok := x.Message.(*Message_ClientInfo); ok {
-			return x.ClientInfo
+		if x, ok := x.Message.(*Message_RequestRelayInfo); ok {
+			return x.RequestRelayInfo
+		}
+	}
+	return nil
+}
+
+func (x *Message) GetRelayInfo() *RelayInfo {
+	if x != nil {
+		if x, ok := x.Message.(*Message_RelayInfo); ok {
+			return x.RelayInfo
 		}
 	}
 	return nil
@@ -262,12 +272,26 @@ type Message_Payload struct {
 	Payload *Payload `protobuf:"bytes,1,opt,name=payload,proto3,oneof"`
 }
 
-type Message_RequestClientInfo struct {
-	RequestClientInfo *emptypb.Empty `protobuf:"bytes,2,opt,name=request_client_info,json=requestClientInfo,proto3,oneof"`
+type Message_EmulationShortcut struct {
+	// Load an emulation shortcut config into a supported card emulation relay
+	// Shortcuts preempt a cAPDU from the reader with a given rAPDU response to reduce round trip delays
+	// if multiple shortcuts match precedence of which shortcut is used is determined by the following
+	// 1. chained_next from the previously matched cAPDU
+	// 2. non-persistent shortcuts are checked before persistent shortcuts
+	// 3. chained_next fields containing multiple EmulationShortcuts will check earlier array entries first
+	// 4. non-chained shortcuts with explicit cAPDU headers are checked before wildcard header matches
+	// 5. non-chained shortcuts with explicit data matches are checked before wildcard data matches
+	// 6. non-chained older shortcuts preferred over newer - this may not always hold true due to network conditions
+	// shortcuts are flushed when disconnect or reconnect messages are received by a relay
+	EmulationShortcut *EmulationShortcut `protobuf:"bytes,7,opt,name=emulation_shortcut,json=emulationShortcut,proto3,oneof"`
 }
 
-type Message_ClientInfo struct {
-	ClientInfo *ClientInfo `protobuf:"bytes,3,opt,name=client_info,json=clientInfo,proto3,oneof"`
+type Message_RequestRelayInfo struct {
+	RequestRelayInfo *emptypb.Empty `protobuf:"bytes,2,opt,name=request_relay_info,json=requestRelayInfo,proto3,oneof"`
+}
+
+type Message_RelayInfo struct {
+	RelayInfo *RelayInfo `protobuf:"bytes,3,opt,name=relay_info,json=relayInfo,proto3,oneof"`
 }
 
 type Message_Log struct {
@@ -287,9 +311,11 @@ type Message_Disconnect struct {
 
 func (*Message_Payload) isMessage_Message() {}
 
-func (*Message_RequestClientInfo) isMessage_Message() {}
+func (*Message_EmulationShortcut) isMessage_Message() {}
 
-func (*Message_ClientInfo) isMessage_Message() {}
+func (*Message_RequestRelayInfo) isMessage_Message() {}
+
+func (*Message_RelayInfo) isMessage_Message() {}
 
 func (*Message_Log) isMessage_Message() {}
 
@@ -366,12 +392,109 @@ func (x *Payload) GetControl() uint32 {
 	return 0
 }
 
+type EmulationShortcut struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// cAPDU headers to match each value must be exactly 4 bytes (CLA INS P1 P2)
+	// if omitted will wildcard match any header
+	CapduHeader [][]byte `protobuf:"bytes,1,rep,name=capdu_header,json=capduHeader,proto3" json:"capdu_header,omitempty"`
+	// data to match
+	// if omitted will wildcard any data value
+	CapduData [][]byte `protobuf:"bytes,2,rep,name=capdu_data,json=capduData,proto3" json:"capdu_data,omitempty"`
+	// rAPDU to respond to the matching shortcut cAPDU
+	Rapdu []byte `protobuf:"bytes,3,opt,name=rapdu,proto3" json:"rapdu,omitempty"`
+	// if false after the first match the shortcut is forgotten
+	// if true it will remain until disconnect or reconnect is received
+	// persistent should only be specified for non rpc replies
+	// if the persistent flag is present on chained_next fields that set of shortcuts will persist until it no longer matches
+	Persistent bool `protobuf:"varint,4,opt,name=persistent,proto3" json:"persistent,omitempty"`
+	// if true the matching cAPDU received from the reader will be will be sent as a Payload back to the client
+	SendCapdu bool `protobuf:"varint,5,opt,name=send_capdu,json=sendCapdu,proto3" json:"send_capdu,omitempty"`
+	// expect the following as the immediate next shortcut to occur to enable response chaining
+	// if the shortcut does not match the next cAPDU it is discarded
+	ChainedNext   []*EmulationShortcut `protobuf:"bytes,6,rep,name=chained_next,json=chainedNext,proto3" json:"chained_next,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EmulationShortcut) Reset() {
+	*x = EmulationShortcut{}
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EmulationShortcut) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EmulationShortcut) ProtoMessage() {}
+
+func (x *EmulationShortcut) ProtoReflect() protoreflect.Message {
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EmulationShortcut.ProtoReflect.Descriptor instead.
+func (*EmulationShortcut) Descriptor() ([]byte, []int) {
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *EmulationShortcut) GetCapduHeader() [][]byte {
+	if x != nil {
+		return x.CapduHeader
+	}
+	return nil
+}
+
+func (x *EmulationShortcut) GetCapduData() [][]byte {
+	if x != nil {
+		return x.CapduData
+	}
+	return nil
+}
+
+func (x *EmulationShortcut) GetRapdu() []byte {
+	if x != nil {
+		return x.Rapdu
+	}
+	return nil
+}
+
+func (x *EmulationShortcut) GetPersistent() bool {
+	if x != nil {
+		return x.Persistent
+	}
+	return false
+}
+
+func (x *EmulationShortcut) GetSendCapdu() bool {
+	if x != nil {
+		return x.SendCapdu
+	}
+	return false
+}
+
+func (x *EmulationShortcut) GetChainedNext() []*EmulationShortcut {
+	if x != nil {
+		return x.ChainedNext
+	}
+	return nil
+}
+
 type Reconnect struct {
-	state       protoimpl.MessageState `protogen:"open.v1"`
-	UseShortcut bool                   `protobuf:"varint,1,opt,name=use_shortcut,json=useShortcut,proto3" json:"use_shortcut,omitempty"`
-	Uid         []byte                 `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
-	Ats         []byte                 `protobuf:"bytes,3,opt,name=ats,proto3" json:"ats,omitempty"`
-	// some card emulators may need an explicit list of AIDs to register, ignored otherwise
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Deprecated: Marked as deprecated in nv/subspacerelay/subspacerelay.proto.
+	UseShortcut bool   `protobuf:"varint,1,opt,name=use_shortcut,json=useShortcut,proto3" json:"use_shortcut,omitempty"`
+	Uid         []byte `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
+	Ats         []byte `protobuf:"bytes,3,opt,name=ats,proto3" json:"ats,omitempty"`
+	// some card emulators may need an explicit list of AIDs to register (eg Mobile HCE), ignored otherwise
 	AidList       [][]byte `protobuf:"bytes,4,rep,name=aid_list,json=aidList,proto3" json:"aid_list,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -379,7 +502,7 @@ type Reconnect struct {
 
 func (x *Reconnect) Reset() {
 	*x = Reconnect{}
-	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[2]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -391,7 +514,7 @@ func (x *Reconnect) String() string {
 func (*Reconnect) ProtoMessage() {}
 
 func (x *Reconnect) ProtoReflect() protoreflect.Message {
-	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[2]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -404,9 +527,10 @@ func (x *Reconnect) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Reconnect.ProtoReflect.Descriptor instead.
 func (*Reconnect) Descriptor() ([]byte, []int) {
-	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{2}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{3}
 }
 
+// Deprecated: Marked as deprecated in nv/subspacerelay/subspacerelay.proto.
 func (x *Reconnect) GetUseShortcut() bool {
 	if x != nil {
 		return x.UseShortcut
@@ -435,7 +559,7 @@ func (x *Reconnect) GetAidList() [][]byte {
 	return nil
 }
 
-type ClientInfo struct {
+type RelayInfo struct {
 	state                 protoimpl.MessageState `protogen:"open.v1"`
 	SupportedPayloadTypes []PayloadType          `protobuf:"varint,1,rep,packed,name=supported_payload_types,json=supportedPayloadTypes,proto3,enum=nv.subspacerelay.PayloadType" json:"supported_payload_types,omitempty"`
 	ConnectionType        ConnectionType         `protobuf:"varint,5,opt,name=connection_type,json=connectionType,proto3,enum=nv.subspacerelay.ConnectionType" json:"connection_type,omitempty"`
@@ -446,26 +570,28 @@ type ClientInfo struct {
 	// device_address is only present when available, eg when connected to a BLE peripheral
 	DeviceAddress []byte `protobuf:"bytes,4,opt,name=device_address,json=deviceAddress,proto3" json:"device_address,omitempty"`
 	// rssi is only present when available, eg when connected to a BLE peripheral
-	Rssi          int32 `protobuf:"zigzag32,6,opt,name=rssi,proto3" json:"rssi,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Rssi int32 `protobuf:"zigzag32,6,opt,name=rssi,proto3" json:"rssi,omitempty"`
+	// true iff EmulationShortcut messages are supported
+	SupportsShortcut bool `protobuf:"varint,7,opt,name=supports_shortcut,json=supportsShortcut,proto3" json:"supports_shortcut,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
-func (x *ClientInfo) Reset() {
-	*x = ClientInfo{}
-	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[3]
+func (x *RelayInfo) Reset() {
+	*x = RelayInfo{}
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ClientInfo) String() string {
+func (x *RelayInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ClientInfo) ProtoMessage() {}
+func (*RelayInfo) ProtoMessage() {}
 
-func (x *ClientInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[3]
+func (x *RelayInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -476,51 +602,58 @@ func (x *ClientInfo) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ClientInfo.ProtoReflect.Descriptor instead.
-func (*ClientInfo) Descriptor() ([]byte, []int) {
-	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{3}
+// Deprecated: Use RelayInfo.ProtoReflect.Descriptor instead.
+func (*RelayInfo) Descriptor() ([]byte, []int) {
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *ClientInfo) GetSupportedPayloadTypes() []PayloadType {
+func (x *RelayInfo) GetSupportedPayloadTypes() []PayloadType {
 	if x != nil {
 		return x.SupportedPayloadTypes
 	}
 	return nil
 }
 
-func (x *ClientInfo) GetConnectionType() ConnectionType {
+func (x *RelayInfo) GetConnectionType() ConnectionType {
 	if x != nil {
 		return x.ConnectionType
 	}
 	return ConnectionType_CONNECTION_TYPE_UNSPECIFIED
 }
 
-func (x *ClientInfo) GetAtr() []byte {
+func (x *RelayInfo) GetAtr() []byte {
 	if x != nil {
 		return x.Atr
 	}
 	return nil
 }
 
-func (x *ClientInfo) GetDeviceName() string {
+func (x *RelayInfo) GetDeviceName() string {
 	if x != nil {
 		return x.DeviceName
 	}
 	return ""
 }
 
-func (x *ClientInfo) GetDeviceAddress() []byte {
+func (x *RelayInfo) GetDeviceAddress() []byte {
 	if x != nil {
 		return x.DeviceAddress
 	}
 	return nil
 }
 
-func (x *ClientInfo) GetRssi() int32 {
+func (x *RelayInfo) GetRssi() int32 {
 	if x != nil {
 		return x.Rssi
 	}
 	return 0
+}
+
+func (x *RelayInfo) GetSupportsShortcut() bool {
+	if x != nil {
+		return x.SupportsShortcut
+	}
+	return false
 }
 
 type Log struct {
@@ -532,7 +665,7 @@ type Log struct {
 
 func (x *Log) Reset() {
 	*x = Log{}
-	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[4]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -544,7 +677,7 @@ func (x *Log) String() string {
 func (*Log) ProtoMessage() {}
 
 func (x *Log) ProtoReflect() protoreflect.Message {
-	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[4]
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -557,7 +690,7 @@ func (x *Log) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Log.ProtoReflect.Descriptor instead.
 func (*Log) Descriptor() ([]byte, []int) {
-	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{4}
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Log) GetMessage() string {
@@ -571,12 +704,13 @@ var File_nv_subspacerelay_subspacerelay_proto protoreflect.FileDescriptor
 
 const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\n" +
-	"$nv/subspacerelay/subspacerelay.proto\x12\x10nv.subspacerelay\x1a\x1bgoogle/protobuf/empty.proto\"\xf8\x02\n" +
+	"$nv/subspacerelay/subspacerelay.proto\x12\x10nv.subspacerelay\x1a\x1bgoogle/protobuf/empty.proto\"\xc9\x03\n" +
 	"\aMessage\x125\n" +
-	"\apayload\x18\x01 \x01(\v2\x19.nv.subspacerelay.PayloadH\x00R\apayload\x12H\n" +
-	"\x13request_client_info\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x11requestClientInfo\x12?\n" +
-	"\vclient_info\x18\x03 \x01(\v2\x1c.nv.subspacerelay.ClientInfoH\x00R\n" +
-	"clientInfo\x12)\n" +
+	"\apayload\x18\x01 \x01(\v2\x19.nv.subspacerelay.PayloadH\x00R\apayload\x12T\n" +
+	"\x12emulation_shortcut\x18\a \x01(\v2#.nv.subspacerelay.EmulationShortcutH\x00R\x11emulationShortcut\x12F\n" +
+	"\x12request_relay_info\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x10requestRelayInfo\x12<\n" +
+	"\n" +
+	"relay_info\x18\x03 \x01(\v2\x1b.nv.subspacerelay.RelayInfoH\x00R\trelayInfo\x12)\n" +
 	"\x03log\x18\x04 \x01(\v2\x15.nv.subspacerelay.LogH\x00R\x03log\x12;\n" +
 	"\treconnect\x18\x05 \x01(\v2\x1b.nv.subspacerelay.ReconnectH\x00R\treconnect\x128\n" +
 	"\n" +
@@ -589,21 +723,32 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\bsequence\x18\x03 \x01(\rR\bsequence\x12\x1d\n" +
 	"\acontrol\x18\x04 \x01(\rH\x00R\acontrol\x88\x01\x01B\n" +
 	"\n" +
-	"\b_control\"m\n" +
-	"\tReconnect\x12!\n" +
-	"\fuse_shortcut\x18\x01 \x01(\bR\vuseShortcut\x12\x10\n" +
+	"\b_control\"\xf2\x01\n" +
+	"\x11EmulationShortcut\x12!\n" +
+	"\fcapdu_header\x18\x01 \x03(\fR\vcapduHeader\x12\x1d\n" +
+	"\n" +
+	"capdu_data\x18\x02 \x03(\fR\tcapduData\x12\x14\n" +
+	"\x05rapdu\x18\x03 \x01(\fR\x05rapdu\x12\x1e\n" +
+	"\n" +
+	"persistent\x18\x04 \x01(\bR\n" +
+	"persistent\x12\x1d\n" +
+	"\n" +
+	"send_capdu\x18\x05 \x01(\bR\tsendCapdu\x12F\n" +
+	"\fchained_next\x18\x06 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\vchainedNext\"q\n" +
+	"\tReconnect\x12%\n" +
+	"\fuse_shortcut\x18\x01 \x01(\bB\x02\x18\x01R\vuseShortcut\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\fR\x03uid\x12\x10\n" +
 	"\x03ats\x18\x03 \x01(\fR\x03ats\x12\x19\n" +
-	"\baid_list\x18\x04 \x03(\fR\aaidList\"\x9c\x02\n" +
-	"\n" +
-	"ClientInfo\x12U\n" +
+	"\baid_list\x18\x04 \x03(\fR\aaidList\"\xc8\x02\n" +
+	"\tRelayInfo\x12U\n" +
 	"\x17supported_payload_types\x18\x01 \x03(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\x15supportedPayloadTypes\x12I\n" +
 	"\x0fconnection_type\x18\x05 \x01(\x0e2 .nv.subspacerelay.ConnectionTypeR\x0econnectionType\x12\x10\n" +
 	"\x03atr\x18\x02 \x01(\fR\x03atr\x12\x1f\n" +
 	"\vdevice_name\x18\x03 \x01(\tR\n" +
 	"deviceName\x12%\n" +
 	"\x0edevice_address\x18\x04 \x01(\fR\rdeviceAddress\x12\x12\n" +
-	"\x04rssi\x18\x06 \x01(\x11R\x04rssi\"\x1f\n" +
+	"\x04rssi\x18\x06 \x01(\x11R\x04rssi\x12+\n" +
+	"\x11supports_shortcut\x18\a \x01(\bR\x10supportsShortcut\"\x1f\n" +
 	"\x03Log\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage*\xc2\x01\n" +
 	"\vPayloadType\x12\x1c\n" +
@@ -635,32 +780,35 @@ func file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP() []byte {
 }
 
 var file_nv_subspacerelay_subspacerelay_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_nv_subspacerelay_subspacerelay_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_nv_subspacerelay_subspacerelay_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_nv_subspacerelay_subspacerelay_proto_goTypes = []any{
-	(PayloadType)(0),      // 0: nv.subspacerelay.PayloadType
-	(ConnectionType)(0),   // 1: nv.subspacerelay.ConnectionType
-	(*Message)(nil),       // 2: nv.subspacerelay.Message
-	(*Payload)(nil),       // 3: nv.subspacerelay.Payload
-	(*Reconnect)(nil),     // 4: nv.subspacerelay.Reconnect
-	(*ClientInfo)(nil),    // 5: nv.subspacerelay.ClientInfo
-	(*Log)(nil),           // 6: nv.subspacerelay.Log
-	(*emptypb.Empty)(nil), // 7: google.protobuf.Empty
+	(PayloadType)(0),          // 0: nv.subspacerelay.PayloadType
+	(ConnectionType)(0),       // 1: nv.subspacerelay.ConnectionType
+	(*Message)(nil),           // 2: nv.subspacerelay.Message
+	(*Payload)(nil),           // 3: nv.subspacerelay.Payload
+	(*EmulationShortcut)(nil), // 4: nv.subspacerelay.EmulationShortcut
+	(*Reconnect)(nil),         // 5: nv.subspacerelay.Reconnect
+	(*RelayInfo)(nil),         // 6: nv.subspacerelay.RelayInfo
+	(*Log)(nil),               // 7: nv.subspacerelay.Log
+	(*emptypb.Empty)(nil),     // 8: google.protobuf.Empty
 }
 var file_nv_subspacerelay_subspacerelay_proto_depIdxs = []int32{
-	3, // 0: nv.subspacerelay.Message.payload:type_name -> nv.subspacerelay.Payload
-	7, // 1: nv.subspacerelay.Message.request_client_info:type_name -> google.protobuf.Empty
-	5, // 2: nv.subspacerelay.Message.client_info:type_name -> nv.subspacerelay.ClientInfo
-	6, // 3: nv.subspacerelay.Message.log:type_name -> nv.subspacerelay.Log
-	4, // 4: nv.subspacerelay.Message.reconnect:type_name -> nv.subspacerelay.Reconnect
-	7, // 5: nv.subspacerelay.Message.disconnect:type_name -> google.protobuf.Empty
-	0, // 6: nv.subspacerelay.Payload.payload_type:type_name -> nv.subspacerelay.PayloadType
-	0, // 7: nv.subspacerelay.ClientInfo.supported_payload_types:type_name -> nv.subspacerelay.PayloadType
-	1, // 8: nv.subspacerelay.ClientInfo.connection_type:type_name -> nv.subspacerelay.ConnectionType
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	3,  // 0: nv.subspacerelay.Message.payload:type_name -> nv.subspacerelay.Payload
+	4,  // 1: nv.subspacerelay.Message.emulation_shortcut:type_name -> nv.subspacerelay.EmulationShortcut
+	8,  // 2: nv.subspacerelay.Message.request_relay_info:type_name -> google.protobuf.Empty
+	6,  // 3: nv.subspacerelay.Message.relay_info:type_name -> nv.subspacerelay.RelayInfo
+	7,  // 4: nv.subspacerelay.Message.log:type_name -> nv.subspacerelay.Log
+	5,  // 5: nv.subspacerelay.Message.reconnect:type_name -> nv.subspacerelay.Reconnect
+	8,  // 6: nv.subspacerelay.Message.disconnect:type_name -> google.protobuf.Empty
+	0,  // 7: nv.subspacerelay.Payload.payload_type:type_name -> nv.subspacerelay.PayloadType
+	4,  // 8: nv.subspacerelay.EmulationShortcut.chained_next:type_name -> nv.subspacerelay.EmulationShortcut
+	0,  // 9: nv.subspacerelay.RelayInfo.supported_payload_types:type_name -> nv.subspacerelay.PayloadType
+	1,  // 10: nv.subspacerelay.RelayInfo.connection_type:type_name -> nv.subspacerelay.ConnectionType
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_nv_subspacerelay_subspacerelay_proto_init() }
@@ -670,8 +818,9 @@ func file_nv_subspacerelay_subspacerelay_proto_init() {
 	}
 	file_nv_subspacerelay_subspacerelay_proto_msgTypes[0].OneofWrappers = []any{
 		(*Message_Payload)(nil),
-		(*Message_RequestClientInfo)(nil),
-		(*Message_ClientInfo)(nil),
+		(*Message_EmulationShortcut)(nil),
+		(*Message_RequestRelayInfo)(nil),
+		(*Message_RelayInfo)(nil),
 		(*Message_Log)(nil),
 		(*Message_Reconnect)(nil),
 		(*Message_Disconnect)(nil),
@@ -683,7 +832,7 @@ func file_nv_subspacerelay_subspacerelay_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_nv_subspacerelay_subspacerelay_proto_rawDesc), len(file_nv_subspacerelay_subspacerelay_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

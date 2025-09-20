@@ -69,22 +69,31 @@ const Message$json = {
       '10': 'payload'
     },
     {
-      '1': 'request_client_info',
+      '1': 'emulation_shortcut',
+      '3': 7,
+      '4': 1,
+      '5': 11,
+      '6': '.nv.subspacerelay.EmulationShortcut',
+      '9': 0,
+      '10': 'emulationShortcut'
+    },
+    {
+      '1': 'request_relay_info',
       '3': 2,
       '4': 1,
       '5': 11,
       '6': '.google.protobuf.Empty',
       '9': 0,
-      '10': 'requestClientInfo'
+      '10': 'requestRelayInfo'
     },
     {
-      '1': 'client_info',
+      '1': 'relay_info',
       '3': 3,
       '4': 1,
       '5': 11,
-      '6': '.nv.subspacerelay.ClientInfo',
+      '6': '.nv.subspacerelay.RelayInfo',
       '9': 0,
-      '10': 'clientInfo'
+      '10': 'relayInfo'
     },
     {
       '1': 'log',
@@ -122,12 +131,14 @@ const Message$json = {
 /// Descriptor for `Message`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List messageDescriptor = $convert.base64Decode(
     'CgdNZXNzYWdlEjUKB3BheWxvYWQYASABKAsyGS5udi5zdWJzcGFjZXJlbGF5LlBheWxvYWRIAF'
-    'IHcGF5bG9hZBJIChNyZXF1ZXN0X2NsaWVudF9pbmZvGAIgASgLMhYuZ29vZ2xlLnByb3RvYnVm'
-    'LkVtcHR5SABSEXJlcXVlc3RDbGllbnRJbmZvEj8KC2NsaWVudF9pbmZvGAMgASgLMhwubnYuc3'
-    'Vic3BhY2VyZWxheS5DbGllbnRJbmZvSABSCmNsaWVudEluZm8SKQoDbG9nGAQgASgLMhUubnYu'
-    'c3Vic3BhY2VyZWxheS5Mb2dIAFIDbG9nEjsKCXJlY29ubmVjdBgFIAEoCzIbLm52LnN1YnNwYW'
-    'NlcmVsYXkuUmVjb25uZWN0SABSCXJlY29ubmVjdBI4CgpkaXNjb25uZWN0GAYgASgLMhYuZ29v'
-    'Z2xlLnByb3RvYnVmLkVtcHR5SABSCmRpc2Nvbm5lY3RCCQoHbWVzc2FnZQ==');
+    'IHcGF5bG9hZBJUChJlbXVsYXRpb25fc2hvcnRjdXQYByABKAsyIy5udi5zdWJzcGFjZXJlbGF5'
+    'LkVtdWxhdGlvblNob3J0Y3V0SABSEWVtdWxhdGlvblNob3J0Y3V0EkYKEnJlcXVlc3RfcmVsYX'
+    'lfaW5mbxgCIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUgAUhByZXF1ZXN0UmVsYXlJbmZv'
+    'EjwKCnJlbGF5X2luZm8YAyABKAsyGy5udi5zdWJzcGFjZXJlbGF5LlJlbGF5SW5mb0gAUglyZW'
+    'xheUluZm8SKQoDbG9nGAQgASgLMhUubnYuc3Vic3BhY2VyZWxheS5Mb2dIAFIDbG9nEjsKCXJl'
+    'Y29ubmVjdBgFIAEoCzIbLm52LnN1YnNwYWNlcmVsYXkuUmVjb25uZWN0SABSCXJlY29ubmVjdB'
+    'I4CgpkaXNjb25uZWN0GAYgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SABSCmRpc2Nvbm5l'
+    'Y3RCCQoHbWVzc2FnZQ==');
 
 @$core.Deprecated('Use payloadDescriptor instead')
 const Payload$json = {
@@ -165,11 +176,46 @@ final $typed_data.Uint8List payloadDescriptor = $convert.base64Decode(
     'Y2UYAyABKA1SCHNlcXVlbmNlEh0KB2NvbnRyb2wYBCABKA1IAFIHY29udHJvbIgBAUIKCghfY2'
     '9udHJvbA==');
 
+@$core.Deprecated('Use emulationShortcutDescriptor instead')
+const EmulationShortcut$json = {
+  '1': 'EmulationShortcut',
+  '2': [
+    {'1': 'capdu_header', '3': 1, '4': 3, '5': 12, '10': 'capduHeader'},
+    {'1': 'capdu_data', '3': 2, '4': 3, '5': 12, '10': 'capduData'},
+    {'1': 'rapdu', '3': 3, '4': 1, '5': 12, '10': 'rapdu'},
+    {'1': 'persistent', '3': 4, '4': 1, '5': 8, '10': 'persistent'},
+    {'1': 'send_capdu', '3': 5, '4': 1, '5': 8, '10': 'sendCapdu'},
+    {
+      '1': 'chained_next',
+      '3': 6,
+      '4': 3,
+      '5': 11,
+      '6': '.nv.subspacerelay.EmulationShortcut',
+      '10': 'chainedNext'
+    },
+  ],
+};
+
+/// Descriptor for `EmulationShortcut`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List emulationShortcutDescriptor = $convert.base64Decode(
+    'ChFFbXVsYXRpb25TaG9ydGN1dBIhCgxjYXBkdV9oZWFkZXIYASADKAxSC2NhcGR1SGVhZGVyEh'
+    '0KCmNhcGR1X2RhdGEYAiADKAxSCWNhcGR1RGF0YRIUCgVyYXBkdRgDIAEoDFIFcmFwZHUSHgoK'
+    'cGVyc2lzdGVudBgEIAEoCFIKcGVyc2lzdGVudBIdCgpzZW5kX2NhcGR1GAUgASgIUglzZW5kQ2'
+    'FwZHUSRgoMY2hhaW5lZF9uZXh0GAYgAygLMiMubnYuc3Vic3BhY2VyZWxheS5FbXVsYXRpb25T'
+    'aG9ydGN1dFILY2hhaW5lZE5leHQ=');
+
 @$core.Deprecated('Use reconnectDescriptor instead')
 const Reconnect$json = {
   '1': 'Reconnect',
   '2': [
-    {'1': 'use_shortcut', '3': 1, '4': 1, '5': 8, '10': 'useShortcut'},
+    {
+      '1': 'use_shortcut',
+      '3': 1,
+      '4': 1,
+      '5': 8,
+      '8': {'3': true},
+      '10': 'useShortcut',
+    },
     {'1': 'uid', '3': 2, '4': 1, '5': 12, '10': 'uid'},
     {'1': 'ats', '3': 3, '4': 1, '5': 12, '10': 'ats'},
     {'1': 'aid_list', '3': 4, '4': 3, '5': 12, '10': 'aidList'},
@@ -178,12 +224,13 @@ const Reconnect$json = {
 
 /// Descriptor for `Reconnect`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List reconnectDescriptor = $convert.base64Decode(
-    'CglSZWNvbm5lY3QSIQoMdXNlX3Nob3J0Y3V0GAEgASgIUgt1c2VTaG9ydGN1dBIQCgN1aWQYAi'
-    'ABKAxSA3VpZBIQCgNhdHMYAyABKAxSA2F0cxIZCghhaWRfbGlzdBgEIAMoDFIHYWlkTGlzdA==');
+    'CglSZWNvbm5lY3QSJQoMdXNlX3Nob3J0Y3V0GAEgASgIQgIYAVILdXNlU2hvcnRjdXQSEAoDdW'
+    'lkGAIgASgMUgN1aWQSEAoDYXRzGAMgASgMUgNhdHMSGQoIYWlkX2xpc3QYBCADKAxSB2FpZExp'
+    'c3Q=');
 
-@$core.Deprecated('Use clientInfoDescriptor instead')
-const ClientInfo$json = {
-  '1': 'ClientInfo',
+@$core.Deprecated('Use relayInfoDescriptor instead')
+const RelayInfo$json = {
+  '1': 'RelayInfo',
   '2': [
     {
       '1': 'supported_payload_types',
@@ -205,17 +252,24 @@ const ClientInfo$json = {
     {'1': 'device_name', '3': 3, '4': 1, '5': 9, '10': 'deviceName'},
     {'1': 'device_address', '3': 4, '4': 1, '5': 12, '10': 'deviceAddress'},
     {'1': 'rssi', '3': 6, '4': 1, '5': 17, '10': 'rssi'},
+    {
+      '1': 'supports_shortcut',
+      '3': 7,
+      '4': 1,
+      '5': 8,
+      '10': 'supportsShortcut'
+    },
   ],
 };
 
-/// Descriptor for `ClientInfo`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List clientInfoDescriptor = $convert.base64Decode(
-    'CgpDbGllbnRJbmZvElUKF3N1cHBvcnRlZF9wYXlsb2FkX3R5cGVzGAEgAygOMh0ubnYuc3Vic3'
-    'BhY2VyZWxheS5QYXlsb2FkVHlwZVIVc3VwcG9ydGVkUGF5bG9hZFR5cGVzEkkKD2Nvbm5lY3Rp'
-    'b25fdHlwZRgFIAEoDjIgLm52LnN1YnNwYWNlcmVsYXkuQ29ubmVjdGlvblR5cGVSDmNvbm5lY3'
-    'Rpb25UeXBlEhAKA2F0chgCIAEoDFIDYXRyEh8KC2RldmljZV9uYW1lGAMgASgJUgpkZXZpY2VO'
-    'YW1lEiUKDmRldmljZV9hZGRyZXNzGAQgASgMUg1kZXZpY2VBZGRyZXNzEhIKBHJzc2kYBiABKB'
-    'FSBHJzc2k=');
+/// Descriptor for `RelayInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List relayInfoDescriptor = $convert.base64Decode(
+    'CglSZWxheUluZm8SVQoXc3VwcG9ydGVkX3BheWxvYWRfdHlwZXMYASADKA4yHS5udi5zdWJzcG'
+    'FjZXJlbGF5LlBheWxvYWRUeXBlUhVzdXBwb3J0ZWRQYXlsb2FkVHlwZXMSSQoPY29ubmVjdGlv'
+    'bl90eXBlGAUgASgOMiAubnYuc3Vic3BhY2VyZWxheS5Db25uZWN0aW9uVHlwZVIOY29ubmVjdG'
+    'lvblR5cGUSEAoDYXRyGAIgASgMUgNhdHISHwoLZGV2aWNlX25hbWUYAyABKAlSCmRldmljZU5h'
+    'bWUSJQoOZGV2aWNlX2FkZHJlc3MYBCABKAxSDWRldmljZUFkZHJlc3MSEgoEcnNzaRgGIAEoEV'
+    'IEcnNzaRIrChFzdXBwb3J0c19zaG9ydGN1dBgHIAEoCFIQc3VwcG9ydHNTaG9ydGN1dA==');
 
 @$core.Deprecated('Use logDescriptor instead')
 const Log$json = {

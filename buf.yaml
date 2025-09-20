@@ -7,7 +7,7 @@ breaking:
     - google
 lint:
   use:
-    - DEFAULT
+    - STANDARD
   except:
     - PACKAGE_VERSION_SUFFIX
     - SERVICE_SUFFIX

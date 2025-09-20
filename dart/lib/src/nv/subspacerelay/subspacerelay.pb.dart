@@ -23,30 +23,33 @@ export 'subspacerelay.pbenum.dart';
 
 enum Message_Message {
   payload,
-  requestClientInfo,
-  clientInfo,
+  requestRelayInfo,
+  relayInfo,
   log,
   reconnect,
   disconnect,
+  emulationShortcut,
   notSet
 }
 
 class Message extends $pb.GeneratedMessage {
   factory Message({
     Payload? payload,
-    $0.Empty? requestClientInfo,
-    ClientInfo? clientInfo,
+    $0.Empty? requestRelayInfo,
+    RelayInfo? relayInfo,
     Log? log,
     Reconnect? reconnect,
     $0.Empty? disconnect,
+    EmulationShortcut? emulationShortcut,
   }) {
     final result = create();
     if (payload != null) result.payload = payload;
-    if (requestClientInfo != null) result.requestClientInfo = requestClientInfo;
-    if (clientInfo != null) result.clientInfo = clientInfo;
+    if (requestRelayInfo != null) result.requestRelayInfo = requestRelayInfo;
+    if (relayInfo != null) result.relayInfo = relayInfo;
     if (log != null) result.log = log;
     if (reconnect != null) result.reconnect = reconnect;
     if (disconnect != null) result.disconnect = disconnect;
+    if (emulationShortcut != null) result.emulationShortcut = emulationShortcut;
     return result;
   }
 
@@ -61,11 +64,12 @@ class Message extends $pb.GeneratedMessage {
 
   static const $core.Map<$core.int, Message_Message> _Message_MessageByTag = {
     1: Message_Message.payload,
-    2: Message_Message.requestClientInfo,
-    3: Message_Message.clientInfo,
+    2: Message_Message.requestRelayInfo,
+    3: Message_Message.relayInfo,
     4: Message_Message.log,
     5: Message_Message.reconnect,
     6: Message_Message.disconnect,
+    7: Message_Message.emulationShortcut,
     0: Message_Message.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
@@ -73,18 +77,20 @@ class Message extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
       createEmptyInstance: create)
-    ..oo(0, [1, 2, 3, 4, 5, 6])
+    ..oo(0, [1, 2, 3, 4, 5, 6, 7])
     ..aOM<Payload>(1, _omitFieldNames ? '' : 'payload',
         subBuilder: Payload.create)
-    ..aOM<$0.Empty>(2, _omitFieldNames ? '' : 'requestClientInfo',
+    ..aOM<$0.Empty>(2, _omitFieldNames ? '' : 'requestRelayInfo',
         subBuilder: $0.Empty.create)
-    ..aOM<ClientInfo>(3, _omitFieldNames ? '' : 'clientInfo',
-        subBuilder: ClientInfo.create)
+    ..aOM<RelayInfo>(3, _omitFieldNames ? '' : 'relayInfo',
+        subBuilder: RelayInfo.create)
     ..aOM<Log>(4, _omitFieldNames ? '' : 'log', subBuilder: Log.create)
     ..aOM<Reconnect>(5, _omitFieldNames ? '' : 'reconnect',
         subBuilder: Reconnect.create)
     ..aOM<$0.Empty>(6, _omitFieldNames ? '' : 'disconnect',
         subBuilder: $0.Empty.create)
+    ..aOM<EmulationShortcut>(7, _omitFieldNames ? '' : 'emulationShortcut',
+        subBuilder: EmulationShortcut.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -121,26 +127,26 @@ class Message extends $pb.GeneratedMessage {
   Payload ensurePayload() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $0.Empty get requestClientInfo => $_getN(1);
+  $0.Empty get requestRelayInfo => $_getN(1);
   @$pb.TagNumber(2)
-  set requestClientInfo($0.Empty value) => $_setField(2, value);
+  set requestRelayInfo($0.Empty value) => $_setField(2, value);
   @$pb.TagNumber(2)
-  $core.bool hasRequestClientInfo() => $_has(1);
+  $core.bool hasRequestRelayInfo() => $_has(1);
   @$pb.TagNumber(2)
-  void clearRequestClientInfo() => $_clearField(2);
+  void clearRequestRelayInfo() => $_clearField(2);
   @$pb.TagNumber(2)
-  $0.Empty ensureRequestClientInfo() => $_ensure(1);
+  $0.Empty ensureRequestRelayInfo() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  ClientInfo get clientInfo => $_getN(2);
+  RelayInfo get relayInfo => $_getN(2);
   @$pb.TagNumber(3)
-  set clientInfo(ClientInfo value) => $_setField(3, value);
+  set relayInfo(RelayInfo value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasClientInfo() => $_has(2);
+  $core.bool hasRelayInfo() => $_has(2);
   @$pb.TagNumber(3)
-  void clearClientInfo() => $_clearField(3);
+  void clearRelayInfo() => $_clearField(3);
   @$pb.TagNumber(3)
-  ClientInfo ensureClientInfo() => $_ensure(2);
+  RelayInfo ensureRelayInfo() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Log get log => $_getN(3);
@@ -177,6 +183,27 @@ class Message extends $pb.GeneratedMessage {
   void clearDisconnect() => $_clearField(6);
   @$pb.TagNumber(6)
   $0.Empty ensureDisconnect() => $_ensure(5);
+
+  /// Load an emulation shortcut config into a supported card emulation relay
+  /// Shortcuts preempt a cAPDU from the reader with a given rAPDU response to reduce round trip delays
+  /// if multiple shortcuts match precedence of which shortcut is used is determined by the following
+  /// 1. chained_next from the previously matched cAPDU
+  /// 2. non-persistent shortcuts are checked before persistent shortcuts
+  /// 3. chained_next fields containing multiple EmulationShortcuts will check earlier array entries first
+  /// 4. non-chained shortcuts with explicit cAPDU headers are checked before wildcard header matches
+  /// 5. non-chained shortcuts with explicit data matches are checked before wildcard data matches
+  /// 6. non-chained older shortcuts preferred over newer - this may not always hold true due to network conditions
+  /// shortcuts are flushed when disconnect or reconnect messages are received by a relay
+  @$pb.TagNumber(7)
+  EmulationShortcut get emulationShortcut => $_getN(6);
+  @$pb.TagNumber(7)
+  set emulationShortcut(EmulationShortcut value) => $_setField(7, value);
+  @$pb.TagNumber(7)
+  $core.bool hasEmulationShortcut() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearEmulationShortcut() => $_clearField(7);
+  @$pb.TagNumber(7)
+  EmulationShortcut ensureEmulationShortcut() => $_ensure(6);
 }
 
 class Payload extends $pb.GeneratedMessage {
@@ -276,9 +303,125 @@ class Payload extends $pb.GeneratedMessage {
   void clearControl() => $_clearField(4);
 }
 
+class EmulationShortcut extends $pb.GeneratedMessage {
+  factory EmulationShortcut({
+    $core.Iterable<$core.List<$core.int>>? capduHeader,
+    $core.Iterable<$core.List<$core.int>>? capduData,
+    $core.List<$core.int>? rapdu,
+    $core.bool? persistent,
+    $core.bool? sendCapdu,
+    $core.Iterable<EmulationShortcut>? chainedNext,
+  }) {
+    final result = create();
+    if (capduHeader != null) result.capduHeader.addAll(capduHeader);
+    if (capduData != null) result.capduData.addAll(capduData);
+    if (rapdu != null) result.rapdu = rapdu;
+    if (persistent != null) result.persistent = persistent;
+    if (sendCapdu != null) result.sendCapdu = sendCapdu;
+    if (chainedNext != null) result.chainedNext.addAll(chainedNext);
+    return result;
+  }
+
+  EmulationShortcut._();
+
+  factory EmulationShortcut.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory EmulationShortcut.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'EmulationShortcut',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
+      createEmptyInstance: create)
+    ..p<$core.List<$core.int>>(
+        1, _omitFieldNames ? '' : 'capduHeader', $pb.PbFieldType.PY)
+    ..p<$core.List<$core.int>>(
+        2, _omitFieldNames ? '' : 'capduData', $pb.PbFieldType.PY)
+    ..a<$core.List<$core.int>>(
+        3, _omitFieldNames ? '' : 'rapdu', $pb.PbFieldType.OY)
+    ..aOB(4, _omitFieldNames ? '' : 'persistent')
+    ..aOB(5, _omitFieldNames ? '' : 'sendCapdu')
+    ..pc<EmulationShortcut>(
+        6, _omitFieldNames ? '' : 'chainedNext', $pb.PbFieldType.PM,
+        subBuilder: EmulationShortcut.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  EmulationShortcut clone() => EmulationShortcut()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  EmulationShortcut copyWith(void Function(EmulationShortcut) updates) =>
+      super.copyWith((message) => updates(message as EmulationShortcut))
+          as EmulationShortcut;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static EmulationShortcut create() => EmulationShortcut._();
+  @$core.override
+  EmulationShortcut createEmptyInstance() => create();
+  static $pb.PbList<EmulationShortcut> createRepeated() =>
+      $pb.PbList<EmulationShortcut>();
+  @$core.pragma('dart2js:noInline')
+  static EmulationShortcut getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<EmulationShortcut>(create);
+  static EmulationShortcut? _defaultInstance;
+
+  /// cAPDU headers to match each value must be exactly 4 bytes (CLA INS P1 P2)
+  /// if omitted will wildcard match any header
+  @$pb.TagNumber(1)
+  $pb.PbList<$core.List<$core.int>> get capduHeader => $_getList(0);
+
+  /// data to match
+  /// if omitted will wildcard any data value
+  @$pb.TagNumber(2)
+  $pb.PbList<$core.List<$core.int>> get capduData => $_getList(1);
+
+  /// rAPDU to respond to the matching shortcut cAPDU
+  @$pb.TagNumber(3)
+  $core.List<$core.int> get rapdu => $_getN(2);
+  @$pb.TagNumber(3)
+  set rapdu($core.List<$core.int> value) => $_setBytes(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasRapdu() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearRapdu() => $_clearField(3);
+
+  /// if false after the first match the shortcut is forgotten
+  /// if true it will remain until disconnect or reconnect is received
+  /// persistent should only be specified for non rpc replies
+  /// if the persistent flag is present on chained_next fields that set of shortcuts will persist until it no longer matches
+  @$pb.TagNumber(4)
+  $core.bool get persistent => $_getBF(3);
+  @$pb.TagNumber(4)
+  set persistent($core.bool value) => $_setBool(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasPersistent() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearPersistent() => $_clearField(4);
+
+  /// if true the matching cAPDU received from the reader will be will be sent as a Payload back to the client
+  @$pb.TagNumber(5)
+  $core.bool get sendCapdu => $_getBF(4);
+  @$pb.TagNumber(5)
+  set sendCapdu($core.bool value) => $_setBool(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasSendCapdu() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearSendCapdu() => $_clearField(5);
+
+  /// expect the following as the immediate next shortcut to occur to enable response chaining
+  /// if the shortcut does not match the next cAPDU it is discarded
+  @$pb.TagNumber(6)
+  $pb.PbList<EmulationShortcut> get chainedNext => $_getList(5);
+}
+
 class Reconnect extends $pb.GeneratedMessage {
   factory Reconnect({
-    $core.bool? useShortcut,
+    @$core.Deprecated('This field is deprecated.') $core.bool? useShortcut,
     $core.List<$core.int>? uid,
     $core.List<$core.int>? ats,
     $core.Iterable<$core.List<$core.int>>? aidList,
@@ -333,12 +476,16 @@ class Reconnect extends $pb.GeneratedMessage {
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Reconnect>(create);
   static Reconnect? _defaultInstance;
 
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(1)
   $core.bool get useShortcut => $_getBF(0);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(1)
   set useShortcut($core.bool value) => $_setBool(0, value);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(1)
   $core.bool hasUseShortcut() => $_has(0);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(1)
   void clearUseShortcut() => $_clearField(1);
 
@@ -360,19 +507,20 @@ class Reconnect extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   void clearAts() => $_clearField(3);
 
-  /// some card emulators may need an explicit list of AIDs to register, ignored otherwise
+  /// some card emulators may need an explicit list of AIDs to register (eg Mobile HCE), ignored otherwise
   @$pb.TagNumber(4)
   $pb.PbList<$core.List<$core.int>> get aidList => $_getList(3);
 }
 
-class ClientInfo extends $pb.GeneratedMessage {
-  factory ClientInfo({
+class RelayInfo extends $pb.GeneratedMessage {
+  factory RelayInfo({
     $core.Iterable<PayloadType>? supportedPayloadTypes,
     $core.List<$core.int>? atr,
     $core.String? deviceName,
     $core.List<$core.int>? deviceAddress,
     ConnectionType? connectionType,
     $core.int? rssi,
+    $core.bool? supportsShortcut,
   }) {
     final result = create();
     if (supportedPayloadTypes != null)
@@ -382,20 +530,21 @@ class ClientInfo extends $pb.GeneratedMessage {
     if (deviceAddress != null) result.deviceAddress = deviceAddress;
     if (connectionType != null) result.connectionType = connectionType;
     if (rssi != null) result.rssi = rssi;
+    if (supportsShortcut != null) result.supportsShortcut = supportsShortcut;
     return result;
   }
 
-  ClientInfo._();
+  RelayInfo._();
 
-  factory ClientInfo.fromBuffer($core.List<$core.int> data,
+  factory RelayInfo.fromBuffer($core.List<$core.int> data,
           [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(data, registry);
-  factory ClientInfo.fromJson($core.String json,
+  factory RelayInfo.fromJson($core.String json,
           [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(json, registry);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'ClientInfo',
+      _omitMessageNames ? '' : 'RelayInfo',
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
       createEmptyInstance: create)
@@ -415,26 +564,27 @@ class ClientInfo extends $pb.GeneratedMessage {
         valueOf: ConnectionType.valueOf,
         enumValues: ConnectionType.values)
     ..a<$core.int>(6, _omitFieldNames ? '' : 'rssi', $pb.PbFieldType.OS3)
+    ..aOB(7, _omitFieldNames ? '' : 'supportsShortcut')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  ClientInfo clone() => ClientInfo()..mergeFromMessage(this);
+  RelayInfo clone() => RelayInfo()..mergeFromMessage(this);
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  ClientInfo copyWith(void Function(ClientInfo) updates) =>
-      super.copyWith((message) => updates(message as ClientInfo)) as ClientInfo;
+  RelayInfo copyWith(void Function(RelayInfo) updates) =>
+      super.copyWith((message) => updates(message as RelayInfo)) as RelayInfo;
 
   @$core.override
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static ClientInfo create() => ClientInfo._();
+  static RelayInfo create() => RelayInfo._();
   @$core.override
-  ClientInfo createEmptyInstance() => create();
-  static $pb.PbList<ClientInfo> createRepeated() => $pb.PbList<ClientInfo>();
+  RelayInfo createEmptyInstance() => create();
+  static $pb.PbList<RelayInfo> createRepeated() => $pb.PbList<RelayInfo>();
   @$core.pragma('dart2js:noInline')
-  static ClientInfo getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<ClientInfo>(create);
-  static ClientInfo? _defaultInstance;
+  static RelayInfo getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RelayInfo>(create);
+  static RelayInfo? _defaultInstance;
 
   @$pb.TagNumber(1)
   $pb.PbList<PayloadType> get supportedPayloadTypes => $_getList(0);
@@ -487,6 +637,16 @@ class ClientInfo extends $pb.GeneratedMessage {
   $core.bool hasRssi() => $_has(5);
   @$pb.TagNumber(6)
   void clearRssi() => $_clearField(6);
+
+  /// true iff EmulationShortcut messages are supported
+  @$pb.TagNumber(7)
+  $core.bool get supportsShortcut => $_getBF(6);
+  @$pb.TagNumber(7)
+  set supportsShortcut($core.bool value) => $_setBool(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasSupportsShortcut() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearSupportsShortcut() => $_clearField(7);
 }
 
 class Log extends $pb.GeneratedMessage {
