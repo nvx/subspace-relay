@@ -282,7 +282,7 @@ type Message_EmulationShortcut struct {
 	// 4. non-chained shortcuts with explicit cAPDU headers are checked before wildcard header matches
 	// 5. non-chained shortcuts with explicit data matches are checked before wildcard data matches
 	// 6. non-chained older shortcuts preferred over newer - this may not always hold true due to network conditions
-	// shortcuts are flushed when disconnect or reconnect messages are received by a relay
+	// shortcuts are flushed when disconnect or reconnect messages are received by a relay unless persist_reconnect is true
 	EmulationShortcut *EmulationShortcut `protobuf:"bytes,7,opt,name=emulation_shortcut,json=emulationShortcut,proto3,oneof"`
 }
 
@@ -407,6 +407,8 @@ type EmulationShortcut struct {
 	// persistent should only be specified for non rpc replies
 	// if the persistent flag is present on chained_next fields that set of shortcuts will persist until it no longer matches
 	Persistent bool `protobuf:"varint,4,opt,name=persistent,proto3" json:"persistent,omitempty"`
+	// if true shortcut will persist disconnect/reconnect cycles
+	PersistReconnect bool `protobuf:"varint,7,opt,name=persist_reconnect,json=persistReconnect,proto3" json:"persist_reconnect,omitempty"`
 	// if true the matching cAPDU received from the reader will be will be sent as a Payload back to the client
 	SendCapdu bool `protobuf:"varint,5,opt,name=send_capdu,json=sendCapdu,proto3" json:"send_capdu,omitempty"`
 	// expect the following as the immediate next shortcut to occur to enable response chaining
@@ -470,6 +472,13 @@ func (x *EmulationShortcut) GetRapdu() []byte {
 func (x *EmulationShortcut) GetPersistent() bool {
 	if x != nil {
 		return x.Persistent
+	}
+	return false
+}
+
+func (x *EmulationShortcut) GetPersistReconnect() bool {
+	if x != nil {
+		return x.PersistReconnect
 	}
 	return false
 }
@@ -734,7 +743,7 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\bsequence\x18\x03 \x01(\rR\bsequence\x12\x1d\n" +
 	"\acontrol\x18\x04 \x01(\rH\x00R\acontrol\x88\x01\x01B\n" +
 	"\n" +
-	"\b_control\"\xf2\x01\n" +
+	"\b_control\"\x9f\x02\n" +
 	"\x11EmulationShortcut\x12!\n" +
 	"\fcapdu_header\x18\x01 \x03(\fR\vcapduHeader\x12\x1d\n" +
 	"\n" +
@@ -742,7 +751,8 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\x05rapdu\x18\x03 \x01(\fR\x05rapdu\x12\x1e\n" +
 	"\n" +
 	"persistent\x18\x04 \x01(\bR\n" +
-	"persistent\x12\x1d\n" +
+	"persistent\x12+\n" +
+	"\x11persist_reconnect\x18\a \x01(\bR\x10persistReconnect\x12\x1d\n" +
 	"\n" +
 	"send_capdu\x18\x05 \x01(\bR\tsendCapdu\x12F\n" +
 	"\fchained_next\x18\x06 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\vchainedNext\"\x93\x01\n" +

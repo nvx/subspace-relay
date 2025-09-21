@@ -184,6 +184,13 @@ const EmulationShortcut$json = {
     {'1': 'capdu_data', '3': 2, '4': 3, '5': 12, '10': 'capduData'},
     {'1': 'rapdu', '3': 3, '4': 1, '5': 12, '10': 'rapdu'},
     {'1': 'persistent', '3': 4, '4': 1, '5': 8, '10': 'persistent'},
+    {
+      '1': 'persist_reconnect',
+      '3': 7,
+      '4': 1,
+      '5': 8,
+      '10': 'persistReconnect'
+    },
     {'1': 'send_capdu', '3': 5, '4': 1, '5': 8, '10': 'sendCapdu'},
     {
       '1': 'chained_next',
@@ -200,9 +207,10 @@ const EmulationShortcut$json = {
 final $typed_data.Uint8List emulationShortcutDescriptor = $convert.base64Decode(
     'ChFFbXVsYXRpb25TaG9ydGN1dBIhCgxjYXBkdV9oZWFkZXIYASADKAxSC2NhcGR1SGVhZGVyEh'
     '0KCmNhcGR1X2RhdGEYAiADKAxSCWNhcGR1RGF0YRIUCgVyYXBkdRgDIAEoDFIFcmFwZHUSHgoK'
-    'cGVyc2lzdGVudBgEIAEoCFIKcGVyc2lzdGVudBIdCgpzZW5kX2NhcGR1GAUgASgIUglzZW5kQ2'
-    'FwZHUSRgoMY2hhaW5lZF9uZXh0GAYgAygLMiMubnYuc3Vic3BhY2VyZWxheS5FbXVsYXRpb25T'
-    'aG9ydGN1dFILY2hhaW5lZE5leHQ=');
+    'cGVyc2lzdGVudBgEIAEoCFIKcGVyc2lzdGVudBIrChFwZXJzaXN0X3JlY29ubmVjdBgHIAEoCF'
+    'IQcGVyc2lzdFJlY29ubmVjdBIdCgpzZW5kX2NhcGR1GAUgASgIUglzZW5kQ2FwZHUSRgoMY2hh'
+    'aW5lZF9uZXh0GAYgAygLMiMubnYuc3Vic3BhY2VyZWxheS5FbXVsYXRpb25TaG9ydGN1dFILY2'
+    'hhaW5lZE5leHQ=');
 
 @$core.Deprecated('Use reconnectDescriptor instead')
 const Reconnect$json = {

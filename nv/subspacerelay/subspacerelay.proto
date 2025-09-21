@@ -19,7 +19,7 @@ message Message {
     // 4. non-chained shortcuts with explicit cAPDU headers are checked before wildcard header matches
     // 5. non-chained shortcuts with explicit data matches are checked before wildcard data matches
     // 6. non-chained older shortcuts preferred over newer - this may not always hold true due to network conditions
-    // shortcuts are flushed when disconnect or reconnect messages are received by a relay
+    // shortcuts are flushed when disconnect or reconnect messages are received by a relay unless persist_reconnect is true
     EmulationShortcut emulation_shortcut = 7;
 
     google.protobuf.Empty request_relay_info = 2;
@@ -83,6 +83,8 @@ message EmulationShortcut {
   // persistent should only be specified for non rpc replies
   // if the persistent flag is present on chained_next fields that set of shortcuts will persist until it no longer matches
   bool persistent = 4;
+  // if true shortcut will persist disconnect/reconnect cycles
+  bool persist_reconnect = 7;
   // if true the matching cAPDU received from the reader will be will be sent as a Payload back to the client
   bool send_capdu = 5;
   // expect the following as the immediate next shortcut to occur to enable response chaining

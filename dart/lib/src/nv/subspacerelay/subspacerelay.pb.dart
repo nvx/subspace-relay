@@ -193,7 +193,7 @@ class Message extends $pb.GeneratedMessage {
   /// 4. non-chained shortcuts with explicit cAPDU headers are checked before wildcard header matches
   /// 5. non-chained shortcuts with explicit data matches are checked before wildcard data matches
   /// 6. non-chained older shortcuts preferred over newer - this may not always hold true due to network conditions
-  /// shortcuts are flushed when disconnect or reconnect messages are received by a relay
+  /// shortcuts are flushed when disconnect or reconnect messages are received by a relay unless persist_reconnect is true
   @$pb.TagNumber(7)
   EmulationShortcut get emulationShortcut => $_getN(6);
   @$pb.TagNumber(7)
@@ -311,6 +311,7 @@ class EmulationShortcut extends $pb.GeneratedMessage {
     $core.bool? persistent,
     $core.bool? sendCapdu,
     $core.Iterable<EmulationShortcut>? chainedNext,
+    $core.bool? persistReconnect,
   }) {
     final result = create();
     if (capduHeader != null) result.capduHeader.addAll(capduHeader);
@@ -319,6 +320,7 @@ class EmulationShortcut extends $pb.GeneratedMessage {
     if (persistent != null) result.persistent = persistent;
     if (sendCapdu != null) result.sendCapdu = sendCapdu;
     if (chainedNext != null) result.chainedNext.addAll(chainedNext);
+    if (persistReconnect != null) result.persistReconnect = persistReconnect;
     return result;
   }
 
@@ -347,6 +349,7 @@ class EmulationShortcut extends $pb.GeneratedMessage {
     ..pc<EmulationShortcut>(
         6, _omitFieldNames ? '' : 'chainedNext', $pb.PbFieldType.PM,
         subBuilder: EmulationShortcut.create)
+    ..aOB(7, _omitFieldNames ? '' : 'persistReconnect')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -417,6 +420,16 @@ class EmulationShortcut extends $pb.GeneratedMessage {
   /// if the shortcut does not match the next cAPDU it is discarded
   @$pb.TagNumber(6)
   $pb.PbList<EmulationShortcut> get chainedNext => $_getList(5);
+
+  /// if true shortcut will persist disconnect/reconnect cycles
+  @$pb.TagNumber(7)
+  $core.bool get persistReconnect => $_getBF(6);
+  @$pb.TagNumber(7)
+  set persistReconnect($core.bool value) => $_setBool(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasPersistReconnect() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearPersistReconnect() => $_clearField(7);
 }
 
 class Reconnect extends $pb.GeneratedMessage {
