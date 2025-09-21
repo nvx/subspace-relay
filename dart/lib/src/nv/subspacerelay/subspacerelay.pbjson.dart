@@ -208,25 +208,28 @@ final $typed_data.Uint8List emulationShortcutDescriptor = $convert.base64Decode(
 const Reconnect$json = {
   '1': 'Reconnect',
   '2': [
-    {
-      '1': 'use_shortcut',
-      '3': 1,
-      '4': 1,
-      '5': 8,
-      '8': {'3': true},
-      '10': 'useShortcut',
-    },
     {'1': 'uid', '3': 2, '4': 1, '5': 12, '10': 'uid'},
     {'1': 'ats', '3': 3, '4': 1, '5': 12, '10': 'ats'},
     {'1': 'aid_list', '3': 4, '4': 3, '5': 12, '10': 'aidList'},
+    {
+      '1': 'shortcuts',
+      '3': 5,
+      '4': 3,
+      '5': 11,
+      '6': '.nv.subspacerelay.EmulationShortcut',
+      '10': 'shortcuts'
+    },
+  ],
+  '9': [
+    {'1': 1, '2': 2},
   ],
 };
 
 /// Descriptor for `Reconnect`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List reconnectDescriptor = $convert.base64Decode(
-    'CglSZWNvbm5lY3QSJQoMdXNlX3Nob3J0Y3V0GAEgASgIQgIYAVILdXNlU2hvcnRjdXQSEAoDdW'
-    'lkGAIgASgMUgN1aWQSEAoDYXRzGAMgASgMUgNhdHMSGQoIYWlkX2xpc3QYBCADKAxSB2FpZExp'
-    'c3Q=');
+    'CglSZWNvbm5lY3QSEAoDdWlkGAIgASgMUgN1aWQSEAoDYXRzGAMgASgMUgNhdHMSGQoIYWlkX2'
+    'xpc3QYBCADKAxSB2FpZExpc3QSQQoJc2hvcnRjdXRzGAUgAygLMiMubnYuc3Vic3BhY2VyZWxh'
+    'eS5FbXVsYXRpb25TaG9ydGN1dFIJc2hvcnRjdXRzSgQIARAC');
 
 @$core.Deprecated('Use relayInfoDescriptor instead')
 const RelayInfo$json = {
@@ -259,6 +262,7 @@ const RelayInfo$json = {
       '5': 8,
       '10': 'supportsShortcut'
     },
+    {'1': 'requires_aid_list', '3': 8, '4': 1, '5': 8, '10': 'requiresAidList'},
   ],
 };
 
@@ -269,7 +273,8 @@ final $typed_data.Uint8List relayInfoDescriptor = $convert.base64Decode(
     'bl90eXBlGAUgASgOMiAubnYuc3Vic3BhY2VyZWxheS5Db25uZWN0aW9uVHlwZVIOY29ubmVjdG'
     'lvblR5cGUSEAoDYXRyGAIgASgMUgNhdHISHwoLZGV2aWNlX25hbWUYAyABKAlSCmRldmljZU5h'
     'bWUSJQoOZGV2aWNlX2FkZHJlc3MYBCABKAxSDWRldmljZUFkZHJlc3MSEgoEcnNzaRgGIAEoEV'
-    'IEcnNzaRIrChFzdXBwb3J0c19zaG9ydGN1dBgHIAEoCFIQc3VwcG9ydHNTaG9ydGN1dA==');
+    'IEcnNzaRIrChFzdXBwb3J0c19zaG9ydGN1dBgHIAEoCFIQc3VwcG9ydHNTaG9ydGN1dBIqChFy'
+    'ZXF1aXJlc19haWRfbGlzdBgIIAEoCFIPcmVxdWlyZXNBaWRMaXN0');
 
 @$core.Deprecated('Use logDescriptor instead')
 const Log$json = {

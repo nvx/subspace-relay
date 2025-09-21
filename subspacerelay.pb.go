@@ -490,12 +490,15 @@ func (x *EmulationShortcut) GetChainedNext() []*EmulationShortcut {
 
 type Reconnect struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Deprecated: Marked as deprecated in nv/subspacerelay/subspacerelay.proto.
-	UseShortcut bool   `protobuf:"varint,1,opt,name=use_shortcut,json=useShortcut,proto3" json:"use_shortcut,omitempty"`
-	Uid         []byte `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
-	Ats         []byte `protobuf:"bytes,3,opt,name=ats,proto3" json:"ats,omitempty"`
-	// some card emulators may need an explicit list of AIDs to register (eg Mobile HCE), ignored otherwise
-	AidList       [][]byte `protobuf:"bytes,4,rep,name=aid_list,json=aidList,proto3" json:"aid_list,omitempty"`
+	// uid may not be supported by all card emulators
+	Uid []byte `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
+	// ats may not be supported by all card emulators
+	Ats []byte `protobuf:"bytes,3,opt,name=ats,proto3" json:"ats,omitempty"`
+	// some card emulator relays may need an explicit list of AIDs to register (eg Mobile HCE) or they will not be visible
+	// if the relay does not have this requirement it will be ignored
+	AidList [][]byte `protobuf:"bytes,4,rep,name=aid_list,json=aidList,proto3" json:"aid_list,omitempty"`
+	// initial list of EmulationShortcuts to load
+	Shortcuts     []*EmulationShortcut `protobuf:"bytes,5,rep,name=shortcuts,proto3" json:"shortcuts,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -530,14 +533,6 @@ func (*Reconnect) Descriptor() ([]byte, []int) {
 	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{3}
 }
 
-// Deprecated: Marked as deprecated in nv/subspacerelay/subspacerelay.proto.
-func (x *Reconnect) GetUseShortcut() bool {
-	if x != nil {
-		return x.UseShortcut
-	}
-	return false
-}
-
 func (x *Reconnect) GetUid() []byte {
 	if x != nil {
 		return x.Uid
@@ -559,6 +554,13 @@ func (x *Reconnect) GetAidList() [][]byte {
 	return nil
 }
 
+func (x *Reconnect) GetShortcuts() []*EmulationShortcut {
+	if x != nil {
+		return x.Shortcuts
+	}
+	return nil
+}
+
 type RelayInfo struct {
 	state                 protoimpl.MessageState `protogen:"open.v1"`
 	SupportedPayloadTypes []PayloadType          `protobuf:"varint,1,rep,packed,name=supported_payload_types,json=supportedPayloadTypes,proto3,enum=nv.subspacerelay.PayloadType" json:"supported_payload_types,omitempty"`
@@ -573,8 +575,10 @@ type RelayInfo struct {
 	Rssi int32 `protobuf:"zigzag32,6,opt,name=rssi,proto3" json:"rssi,omitempty"`
 	// true iff EmulationShortcut messages are supported
 	SupportsShortcut bool `protobuf:"varint,7,opt,name=supports_shortcut,json=supportsShortcut,proto3" json:"supports_shortcut,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// true iff card emulation requires an explicit list of AIDs in the Reconnect message
+	RequiresAidList bool `protobuf:"varint,8,opt,name=requires_aid_list,json=requiresAidList,proto3" json:"requires_aid_list,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *RelayInfo) Reset() {
@@ -652,6 +656,13 @@ func (x *RelayInfo) GetRssi() int32 {
 func (x *RelayInfo) GetSupportsShortcut() bool {
 	if x != nil {
 		return x.SupportsShortcut
+	}
+	return false
+}
+
+func (x *RelayInfo) GetRequiresAidList() bool {
+	if x != nil {
+		return x.RequiresAidList
 	}
 	return false
 }
@@ -734,12 +745,12 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"persistent\x12\x1d\n" +
 	"\n" +
 	"send_capdu\x18\x05 \x01(\bR\tsendCapdu\x12F\n" +
-	"\fchained_next\x18\x06 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\vchainedNext\"q\n" +
-	"\tReconnect\x12%\n" +
-	"\fuse_shortcut\x18\x01 \x01(\bB\x02\x18\x01R\vuseShortcut\x12\x10\n" +
+	"\fchained_next\x18\x06 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\vchainedNext\"\x93\x01\n" +
+	"\tReconnect\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\fR\x03uid\x12\x10\n" +
 	"\x03ats\x18\x03 \x01(\fR\x03ats\x12\x19\n" +
-	"\baid_list\x18\x04 \x03(\fR\aaidList\"\xc8\x02\n" +
+	"\baid_list\x18\x04 \x03(\fR\aaidList\x12A\n" +
+	"\tshortcuts\x18\x05 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\tshortcutsJ\x04\b\x01\x10\x02\"\xf4\x02\n" +
 	"\tRelayInfo\x12U\n" +
 	"\x17supported_payload_types\x18\x01 \x03(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\x15supportedPayloadTypes\x12I\n" +
 	"\x0fconnection_type\x18\x05 \x01(\x0e2 .nv.subspacerelay.ConnectionTypeR\x0econnectionType\x12\x10\n" +
@@ -748,7 +759,8 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"deviceName\x12%\n" +
 	"\x0edevice_address\x18\x04 \x01(\fR\rdeviceAddress\x12\x12\n" +
 	"\x04rssi\x18\x06 \x01(\x11R\x04rssi\x12+\n" +
-	"\x11supports_shortcut\x18\a \x01(\bR\x10supportsShortcut\"\x1f\n" +
+	"\x11supports_shortcut\x18\a \x01(\bR\x10supportsShortcut\x12*\n" +
+	"\x11requires_aid_list\x18\b \x01(\bR\x0frequiresAidList\"\x1f\n" +
 	"\x03Log\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage*\xc2\x01\n" +
 	"\vPayloadType\x12\x1c\n" +
@@ -802,13 +814,14 @@ var file_nv_subspacerelay_subspacerelay_proto_depIdxs = []int32{
 	8,  // 6: nv.subspacerelay.Message.disconnect:type_name -> google.protobuf.Empty
 	0,  // 7: nv.subspacerelay.Payload.payload_type:type_name -> nv.subspacerelay.PayloadType
 	4,  // 8: nv.subspacerelay.EmulationShortcut.chained_next:type_name -> nv.subspacerelay.EmulationShortcut
-	0,  // 9: nv.subspacerelay.RelayInfo.supported_payload_types:type_name -> nv.subspacerelay.PayloadType
-	1,  // 10: nv.subspacerelay.RelayInfo.connection_type:type_name -> nv.subspacerelay.ConnectionType
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	4,  // 9: nv.subspacerelay.Reconnect.shortcuts:type_name -> nv.subspacerelay.EmulationShortcut
+	0,  // 10: nv.subspacerelay.RelayInfo.supported_payload_types:type_name -> nv.subspacerelay.PayloadType
+	1,  // 11: nv.subspacerelay.RelayInfo.connection_type:type_name -> nv.subspacerelay.ConnectionType
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_nv_subspacerelay_subspacerelay_proto_init() }

@@ -421,16 +421,16 @@ class EmulationShortcut extends $pb.GeneratedMessage {
 
 class Reconnect extends $pb.GeneratedMessage {
   factory Reconnect({
-    @$core.Deprecated('This field is deprecated.') $core.bool? useShortcut,
     $core.List<$core.int>? uid,
     $core.List<$core.int>? ats,
     $core.Iterable<$core.List<$core.int>>? aidList,
+    $core.Iterable<EmulationShortcut>? shortcuts,
   }) {
     final result = create();
-    if (useShortcut != null) result.useShortcut = useShortcut;
     if (uid != null) result.uid = uid;
     if (ats != null) result.ats = ats;
     if (aidList != null) result.aidList.addAll(aidList);
+    if (shortcuts != null) result.shortcuts.addAll(shortcuts);
     return result;
   }
 
@@ -448,13 +448,15 @@ class Reconnect extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
       createEmptyInstance: create)
-    ..aOB(1, _omitFieldNames ? '' : 'useShortcut')
     ..a<$core.List<$core.int>>(
         2, _omitFieldNames ? '' : 'uid', $pb.PbFieldType.OY)
     ..a<$core.List<$core.int>>(
         3, _omitFieldNames ? '' : 'ats', $pb.PbFieldType.OY)
     ..p<$core.List<$core.int>>(
         4, _omitFieldNames ? '' : 'aidList', $pb.PbFieldType.PY)
+    ..pc<EmulationShortcut>(
+        5, _omitFieldNames ? '' : 'shortcuts', $pb.PbFieldType.PM,
+        subBuilder: EmulationShortcut.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -476,40 +478,34 @@ class Reconnect extends $pb.GeneratedMessage {
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Reconnect>(create);
   static Reconnect? _defaultInstance;
 
-  @$core.Deprecated('This field is deprecated.')
-  @$pb.TagNumber(1)
-  $core.bool get useShortcut => $_getBF(0);
-  @$core.Deprecated('This field is deprecated.')
-  @$pb.TagNumber(1)
-  set useShortcut($core.bool value) => $_setBool(0, value);
-  @$core.Deprecated('This field is deprecated.')
-  @$pb.TagNumber(1)
-  $core.bool hasUseShortcut() => $_has(0);
-  @$core.Deprecated('This field is deprecated.')
-  @$pb.TagNumber(1)
-  void clearUseShortcut() => $_clearField(1);
-
+  /// uid may not be supported by all card emulators
   @$pb.TagNumber(2)
-  $core.List<$core.int> get uid => $_getN(1);
+  $core.List<$core.int> get uid => $_getN(0);
   @$pb.TagNumber(2)
-  set uid($core.List<$core.int> value) => $_setBytes(1, value);
+  set uid($core.List<$core.int> value) => $_setBytes(0, value);
   @$pb.TagNumber(2)
-  $core.bool hasUid() => $_has(1);
+  $core.bool hasUid() => $_has(0);
   @$pb.TagNumber(2)
   void clearUid() => $_clearField(2);
 
+  /// ats may not be supported by all card emulators
   @$pb.TagNumber(3)
-  $core.List<$core.int> get ats => $_getN(2);
+  $core.List<$core.int> get ats => $_getN(1);
   @$pb.TagNumber(3)
-  set ats($core.List<$core.int> value) => $_setBytes(2, value);
+  set ats($core.List<$core.int> value) => $_setBytes(1, value);
   @$pb.TagNumber(3)
-  $core.bool hasAts() => $_has(2);
+  $core.bool hasAts() => $_has(1);
   @$pb.TagNumber(3)
   void clearAts() => $_clearField(3);
 
-  /// some card emulators may need an explicit list of AIDs to register (eg Mobile HCE), ignored otherwise
+  /// some card emulator relays may need an explicit list of AIDs to register (eg Mobile HCE) or they will not be visible
+  /// if the relay does not have this requirement it will be ignored
   @$pb.TagNumber(4)
-  $pb.PbList<$core.List<$core.int>> get aidList => $_getList(3);
+  $pb.PbList<$core.List<$core.int>> get aidList => $_getList(2);
+
+  /// initial list of EmulationShortcuts to load
+  @$pb.TagNumber(5)
+  $pb.PbList<EmulationShortcut> get shortcuts => $_getList(3);
 }
 
 class RelayInfo extends $pb.GeneratedMessage {
@@ -521,6 +517,7 @@ class RelayInfo extends $pb.GeneratedMessage {
     ConnectionType? connectionType,
     $core.int? rssi,
     $core.bool? supportsShortcut,
+    $core.bool? requiresAidList,
   }) {
     final result = create();
     if (supportedPayloadTypes != null)
@@ -531,6 +528,7 @@ class RelayInfo extends $pb.GeneratedMessage {
     if (connectionType != null) result.connectionType = connectionType;
     if (rssi != null) result.rssi = rssi;
     if (supportsShortcut != null) result.supportsShortcut = supportsShortcut;
+    if (requiresAidList != null) result.requiresAidList = requiresAidList;
     return result;
   }
 
@@ -565,6 +563,7 @@ class RelayInfo extends $pb.GeneratedMessage {
         enumValues: ConnectionType.values)
     ..a<$core.int>(6, _omitFieldNames ? '' : 'rssi', $pb.PbFieldType.OS3)
     ..aOB(7, _omitFieldNames ? '' : 'supportsShortcut')
+    ..aOB(8, _omitFieldNames ? '' : 'requiresAidList')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -647,6 +646,16 @@ class RelayInfo extends $pb.GeneratedMessage {
   $core.bool hasSupportsShortcut() => $_has(6);
   @$pb.TagNumber(7)
   void clearSupportsShortcut() => $_clearField(7);
+
+  /// true iff card emulation requires an explicit list of AIDs in the Reconnect message
+  @$pb.TagNumber(8)
+  $core.bool get requiresAidList => $_getBF(7);
+  @$pb.TagNumber(8)
+  set requiresAidList($core.bool value) => $_setBool(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasRequiresAidList() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearRequiresAidList() => $_clearField(8);
 }
 
 class Log extends $pb.GeneratedMessage {
