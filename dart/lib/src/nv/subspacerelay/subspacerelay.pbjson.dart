@@ -227,6 +227,13 @@ const Reconnect$json = {
       '6': '.nv.subspacerelay.EmulationShortcut',
       '10': 'shortcuts'
     },
+    {
+      '1': 'force_flush_shortcuts',
+      '3': 6,
+      '4': 1,
+      '5': 8,
+      '10': 'forceFlushShortcuts'
+    },
   ],
   '9': [
     {'1': 1, '2': 2},
@@ -237,7 +244,8 @@ const Reconnect$json = {
 final $typed_data.Uint8List reconnectDescriptor = $convert.base64Decode(
     'CglSZWNvbm5lY3QSEAoDdWlkGAIgASgMUgN1aWQSEAoDYXRzGAMgASgMUgNhdHMSGQoIYWlkX2'
     'xpc3QYBCADKAxSB2FpZExpc3QSQQoJc2hvcnRjdXRzGAUgAygLMiMubnYuc3Vic3BhY2VyZWxh'
-    'eS5FbXVsYXRpb25TaG9ydGN1dFIJc2hvcnRjdXRzSgQIARAC');
+    'eS5FbXVsYXRpb25TaG9ydGN1dFIJc2hvcnRjdXRzEjIKFWZvcmNlX2ZsdXNoX3Nob3J0Y3V0cx'
+    'gGIAEoCFITZm9yY2VGbHVzaFNob3J0Y3V0c0oECAEQAg==');
 
 @$core.Deprecated('Use relayInfoDescriptor instead')
 const RelayInfo$json = {

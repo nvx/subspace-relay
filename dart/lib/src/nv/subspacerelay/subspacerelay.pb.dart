@@ -438,12 +438,15 @@ class Reconnect extends $pb.GeneratedMessage {
     $core.List<$core.int>? ats,
     $core.Iterable<$core.List<$core.int>>? aidList,
     $core.Iterable<EmulationShortcut>? shortcuts,
+    $core.bool? forceFlushShortcuts,
   }) {
     final result = create();
     if (uid != null) result.uid = uid;
     if (ats != null) result.ats = ats;
     if (aidList != null) result.aidList.addAll(aidList);
     if (shortcuts != null) result.shortcuts.addAll(shortcuts);
+    if (forceFlushShortcuts != null)
+      result.forceFlushShortcuts = forceFlushShortcuts;
     return result;
   }
 
@@ -470,6 +473,7 @@ class Reconnect extends $pb.GeneratedMessage {
     ..pc<EmulationShortcut>(
         5, _omitFieldNames ? '' : 'shortcuts', $pb.PbFieldType.PM,
         subBuilder: EmulationShortcut.create)
+    ..aOB(6, _omitFieldNames ? '' : 'forceFlushShortcuts')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -519,6 +523,16 @@ class Reconnect extends $pb.GeneratedMessage {
   /// initial list of EmulationShortcuts to load
   @$pb.TagNumber(5)
   $pb.PbList<EmulationShortcut> get shortcuts => $_getList(3);
+
+  /// force flush all shortcuts, even those with persist_reconnect set to true
+  @$pb.TagNumber(6)
+  $core.bool get forceFlushShortcuts => $_getBF(4);
+  @$pb.TagNumber(6)
+  set forceFlushShortcuts($core.bool value) => $_setBool(4, value);
+  @$pb.TagNumber(6)
+  $core.bool hasForceFlushShortcuts() => $_has(4);
+  @$pb.TagNumber(6)
+  void clearForceFlushShortcuts() => $_clearField(6);
 }
 
 class RelayInfo extends $pb.GeneratedMessage {

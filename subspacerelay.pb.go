@@ -507,9 +507,11 @@ type Reconnect struct {
 	// if the relay does not have this requirement it will be ignored
 	AidList [][]byte `protobuf:"bytes,4,rep,name=aid_list,json=aidList,proto3" json:"aid_list,omitempty"`
 	// initial list of EmulationShortcuts to load
-	Shortcuts     []*EmulationShortcut `protobuf:"bytes,5,rep,name=shortcuts,proto3" json:"shortcuts,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Shortcuts []*EmulationShortcut `protobuf:"bytes,5,rep,name=shortcuts,proto3" json:"shortcuts,omitempty"`
+	// force flush all shortcuts, even those with persist_reconnect set to true
+	ForceFlushShortcuts bool `protobuf:"varint,6,opt,name=force_flush_shortcuts,json=forceFlushShortcuts,proto3" json:"force_flush_shortcuts,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *Reconnect) Reset() {
@@ -568,6 +570,13 @@ func (x *Reconnect) GetShortcuts() []*EmulationShortcut {
 		return x.Shortcuts
 	}
 	return nil
+}
+
+func (x *Reconnect) GetForceFlushShortcuts() bool {
+	if x != nil {
+		return x.ForceFlushShortcuts
+	}
+	return false
 }
 
 type RelayInfo struct {
@@ -755,12 +764,13 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\x11persist_reconnect\x18\a \x01(\bR\x10persistReconnect\x12\x1d\n" +
 	"\n" +
 	"send_capdu\x18\x05 \x01(\bR\tsendCapdu\x12F\n" +
-	"\fchained_next\x18\x06 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\vchainedNext\"\x93\x01\n" +
+	"\fchained_next\x18\x06 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\vchainedNext\"\xc7\x01\n" +
 	"\tReconnect\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\fR\x03uid\x12\x10\n" +
 	"\x03ats\x18\x03 \x01(\fR\x03ats\x12\x19\n" +
 	"\baid_list\x18\x04 \x03(\fR\aaidList\x12A\n" +
-	"\tshortcuts\x18\x05 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\tshortcutsJ\x04\b\x01\x10\x02\"\xf4\x02\n" +
+	"\tshortcuts\x18\x05 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\tshortcuts\x122\n" +
+	"\x15force_flush_shortcuts\x18\x06 \x01(\bR\x13forceFlushShortcutsJ\x04\b\x01\x10\x02\"\xf4\x02\n" +
 	"\tRelayInfo\x12U\n" +
 	"\x17supported_payload_types\x18\x01 \x03(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\x15supportedPayloadTypes\x12I\n" +
 	"\x0fconnection_type\x18\x05 \x01(\x0e2 .nv.subspacerelay.ConnectionTypeR\x0econnectionType\x12\x10\n" +

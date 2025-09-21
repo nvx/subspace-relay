@@ -103,6 +103,8 @@ message Reconnect {
   repeated bytes aid_list = 4;
   // initial list of EmulationShortcuts to load
   repeated EmulationShortcut shortcuts = 5;
+  // force flush all shortcuts, even those with persist_reconnect set to true
+  bool force_flush_shortcuts = 6;
 }
 
 message RelayInfo {
