@@ -91,11 +91,16 @@ message EmulationShortcut {
 }
 
 message Reconnect {
-  bool use_shortcut = 1 [deprecated = true];
+  reserved 1;
+  // uid may not be supported by all card emulators
   bytes uid = 2;
+  // ats may not be supported by all card emulators
   bytes ats = 3;
-  // some card emulators may need an explicit list of AIDs to register (eg Mobile HCE), ignored otherwise
+  // some card emulator relays may need an explicit list of AIDs to register (eg Mobile HCE) or they will not be visible
+  // if the relay does not have this requirement it will be ignored
   repeated bytes aid_list = 4;
+  // initial list of EmulationShortcuts to load
+  repeated EmulationShortcut shortcuts = 5;
 }
 
 message RelayInfo {
@@ -111,6 +116,8 @@ message RelayInfo {
   sint32 rssi = 6;
   // true iff EmulationShortcut messages are supported
   bool supports_shortcut = 7;
+  // true iff card emulation requires an explicit list of AIDs in the Reconnect message
+  bool requires_aid_list = 8;
 }
 
 message Log {
