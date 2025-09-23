@@ -61,8 +61,8 @@ is the preferable option.
 
 ## Dart
 
-Buf unfortunately does not host a fully featured Dart package repository so generated dart code will be published
-to pub.dev.
+Buf unfortunately does not host a fully featured Dart package repository so generated dart code has been published
+to pub.dev as [subspace_relay_pb](https://pub.dev/packages/subspace_relay_pb)
 
 ## Other Languages
 Buf will automatically generate SDKs for supported languages from corresponding Buf repo
