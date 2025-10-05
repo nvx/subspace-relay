@@ -9,8 +9,8 @@ a PCSC reader remotely over the internet to talk to a card or to write emulation
 running on a computer that can interact with a physical reader.
 
 There are two sides of the communication in Subspace Relay, the relay side which exposes a card/reader/etc, and
-a consumer that utilises it. Relays are designed to be simple and controlled by the consumer. Some patterns may
-involve a single consumer application connecting to multiple relays while others may only talk to one relay.
+a controller that utilises it. Relays are designed to be simple and controlled by the controller. Some patterns may
+involve a single controller application connecting to multiple relays while others may only talk to one relay.
 
 Some patterns possible with Subspace Relay:
 * Talking to a card across the internet 
@@ -41,7 +41,7 @@ as well as some example applications that make use of the library.
 connected via BLE using the [go-acr1555ble](https://github.com/nvx/go-acr1555ble) library for connectivity
 * [subspace-relay-cardhopper-emulate](https://github.com/nvx/subspace-relay-cardhopper-emulate) exposes a Proxmark3
 running the `hf_cardhopper` standalone mode as a card emulator
-* [subspace-relay-pcsc-consumer-demo](https://github.com/nvx/subspace-relay-pcsc-consumer-demo) a demo consumer
+* [subspace-relay-pcsc-controller-demo](https://github.com/nvx/subspace-relay-pcsc-controller-demo) a demo controller
 that can talk to eg `subspace-relay-pcsc` to exchange APDUs
 
 # Generated Protobuf Libraries Usage

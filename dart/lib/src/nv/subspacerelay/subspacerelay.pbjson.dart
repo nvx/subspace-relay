@@ -122,6 +122,33 @@ const Message$json = {
       '9': 0,
       '10': 'disconnect'
     },
+    {
+      '1': 'request_relay_discovery',
+      '3': 8,
+      '4': 1,
+      '5': 11,
+      '6': '.nv.subspacerelay.RequestRelayDiscovery',
+      '9': 0,
+      '10': 'requestRelayDiscovery'
+    },
+    {
+      '1': 'relay_discovery_plaintext',
+      '3': 9,
+      '4': 1,
+      '5': 11,
+      '6': '.nv.subspacerelay.RelayDiscovery',
+      '9': 0,
+      '10': 'relayDiscoveryPlaintext'
+    },
+    {
+      '1': 'relay_discovery_encrypted',
+      '3': 10,
+      '4': 1,
+      '5': 11,
+      '6': '.nv.subspacerelay.RelayDiscoveryEncrypted',
+      '9': 0,
+      '10': 'relayDiscoveryEncrypted'
+    },
   ],
   '8': [
     {'1': 'message'},
@@ -138,7 +165,12 @@ final $typed_data.Uint8List messageDescriptor = $convert.base64Decode(
     'xheUluZm8SKQoDbG9nGAQgASgLMhUubnYuc3Vic3BhY2VyZWxheS5Mb2dIAFIDbG9nEjsKCXJl'
     'Y29ubmVjdBgFIAEoCzIbLm52LnN1YnNwYWNlcmVsYXkuUmVjb25uZWN0SABSCXJlY29ubmVjdB'
     'I4CgpkaXNjb25uZWN0GAYgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SABSCmRpc2Nvbm5l'
-    'Y3RCCQoHbWVzc2FnZQ==');
+    'Y3QSYQoXcmVxdWVzdF9yZWxheV9kaXNjb3ZlcnkYCCABKAsyJy5udi5zdWJzcGFjZXJlbGF5Ll'
+    'JlcXVlc3RSZWxheURpc2NvdmVyeUgAUhVyZXF1ZXN0UmVsYXlEaXNjb3ZlcnkSXgoZcmVsYXlf'
+    'ZGlzY292ZXJ5X3BsYWludGV4dBgJIAEoCzIgLm52LnN1YnNwYWNlcmVsYXkuUmVsYXlEaXNjb3'
+    'ZlcnlIAFIXcmVsYXlEaXNjb3ZlcnlQbGFpbnRleHQSZwoZcmVsYXlfZGlzY292ZXJ5X2VuY3J5'
+    'cHRlZBgKIAEoCzIpLm52LnN1YnNwYWNlcmVsYXkuUmVsYXlEaXNjb3ZlcnlFbmNyeXB0ZWRIAF'
+    'IXcmVsYXlEaXNjb3ZlcnlFbmNyeXB0ZWRCCQoHbWVzc2FnZQ==');
 
 @$core.Deprecated('Use payloadDescriptor instead')
 const Payload$json = {
@@ -279,6 +311,7 @@ const RelayInfo$json = {
       '10': 'supportsShortcut'
     },
     {'1': 'requires_aid_list', '3': 8, '4': 1, '5': 8, '10': 'requiresAidList'},
+    {'1': 'user_agent', '3': 9, '4': 1, '5': 9, '10': 'userAgent'},
   ],
 };
 
@@ -290,7 +323,77 @@ final $typed_data.Uint8List relayInfoDescriptor = $convert.base64Decode(
     'lvblR5cGUSEAoDYXRyGAIgASgMUgNhdHISHwoLZGV2aWNlX25hbWUYAyABKAlSCmRldmljZU5h'
     'bWUSJQoOZGV2aWNlX2FkZHJlc3MYBCABKAxSDWRldmljZUFkZHJlc3MSEgoEcnNzaRgGIAEoEV'
     'IEcnNzaRIrChFzdXBwb3J0c19zaG9ydGN1dBgHIAEoCFIQc3VwcG9ydHNTaG9ydGN1dBIqChFy'
-    'ZXF1aXJlc19haWRfbGlzdBgIIAEoCFIPcmVxdWlyZXNBaWRMaXN0');
+    'ZXF1aXJlc19haWRfbGlzdBgIIAEoCFIPcmVxdWlyZXNBaWRMaXN0Eh0KCnVzZXJfYWdlbnQYCS'
+    'ABKAlSCXVzZXJBZ2VudA==');
+
+@$core.Deprecated('Use requestRelayDiscoveryDescriptor instead')
+const RequestRelayDiscovery$json = {
+  '1': 'RequestRelayDiscovery',
+  '2': [
+    {
+      '1': 'controller_public_key',
+      '3': 1,
+      '4': 1,
+      '5': 12,
+      '10': 'controllerPublicKey'
+    },
+  ],
+};
+
+/// Descriptor for `RequestRelayDiscovery`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List requestRelayDiscoveryDescriptor = $convert.base64Decode(
+    'ChVSZXF1ZXN0UmVsYXlEaXNjb3ZlcnkSMgoVY29udHJvbGxlcl9wdWJsaWNfa2V5GAEgASgMUh'
+    'Njb250cm9sbGVyUHVibGljS2V5');
+
+@$core.Deprecated('Use relayDiscoveryDescriptor instead')
+const RelayDiscovery$json = {
+  '1': 'RelayDiscovery',
+  '2': [
+    {'1': 'relay_id', '3': 1, '4': 1, '5': 9, '10': 'relayId'},
+    {
+      '1': 'relay_info',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.nv.subspacerelay.RelayInfo',
+      '10': 'relayInfo'
+    },
+  ],
+};
+
+/// Descriptor for `RelayDiscovery`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List relayDiscoveryDescriptor = $convert.base64Decode(
+    'Cg5SZWxheURpc2NvdmVyeRIZCghyZWxheV9pZBgBIAEoCVIHcmVsYXlJZBI6CgpyZWxheV9pbm'
+    'ZvGAIgASgLMhsubnYuc3Vic3BhY2VyZWxheS5SZWxheUluZm9SCXJlbGF5SW5mbw==');
+
+@$core.Deprecated('Use relayDiscoveryEncryptedDescriptor instead')
+const RelayDiscoveryEncrypted$json = {
+  '1': 'RelayDiscoveryEncrypted',
+  '2': [
+    {
+      '1': 'controller_public_key',
+      '3': 1,
+      '4': 1,
+      '5': 12,
+      '10': 'controllerPublicKey'
+    },
+    {'1': 'relay_public_key', '3': 2, '4': 1, '5': 12, '10': 'relayPublicKey'},
+    {
+      '1': 'encrypted_relay_discovery',
+      '3': 3,
+      '4': 1,
+      '5': 12,
+      '10': 'encryptedRelayDiscovery'
+    },
+  ],
+};
+
+/// Descriptor for `RelayDiscoveryEncrypted`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List relayDiscoveryEncryptedDescriptor = $convert.base64Decode(
+    'ChdSZWxheURpc2NvdmVyeUVuY3J5cHRlZBIyChVjb250cm9sbGVyX3B1YmxpY19rZXkYASABKA'
+    'xSE2NvbnRyb2xsZXJQdWJsaWNLZXkSKAoQcmVsYXlfcHVibGljX2tleRgCIAEoDFIOcmVsYXlQ'
+    'dWJsaWNLZXkSOgoZZW5jcnlwdGVkX3JlbGF5X2Rpc2NvdmVyeRgDIAEoDFIXZW5jcnlwdGVkUm'
+    'VsYXlEaXNjb3Zlcnk=');
 
 @$core.Deprecated('Use logDescriptor instead')
 const Log$json = {

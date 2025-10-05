@@ -8,6 +8,7 @@ option go_package = "github.com/nvx/subspace-relay;subspacerelaypb";
 
 message Message {
   oneof message {
+    // Payloads exchanged between a relay and a controller
     Payload payload = 1;
 
     // Load an emulation shortcut config into a supported card emulation relay
@@ -32,6 +33,21 @@ message Message {
     // require setup (cardhopper emulation)
     Reconnect reconnect = 5;
     google.protobuf.Empty disconnect = 6;
+
+    // Controllers can broadcast a request_relay_discovery message and all connected relays with discovery enabled will
+    // respond with a relay_discovery response.
+    // Supporting discovery is opt-in and relays may choose to only support encrypted discovery and optionally whitelist
+    // specific controller public keys
+    RequestRelayDiscovery request_relay_discovery = 8;
+    // If a relay has discovery enabled it will emit a relay_discovery_plaintext or relay_discovery_encrypted broadcast
+    // message on startup and in response to a received request_discovery message.
+    // Supporting plaintext discovery removes the cryptographic guarantees that a malicious broker or anything that can
+    // see the broker traffic can not view comms when cryptography using relay_ids is enabled.
+    // A relay with discovery enabled  will support both plaintext and encrypted discovery unless a whitelisted public
+    // key is specified at which point only encrypted discovery messages will be supported and the startup broadcast
+    // will be encrypted with he provided public key
+    RelayDiscovery relay_discovery_plaintext = 9;
+    RelayDiscoveryEncrypted relay_discovery_encrypted = 10;
   }
 }
 
@@ -122,6 +138,28 @@ message RelayInfo {
   bool supports_shortcut = 7;
   // true iff card emulation requires an explicit list of AIDs in the Reconnect message
   bool requires_aid_list = 8;
+  // user agent is an optional name/version of the relay application
+  string user_agent = 9;
+}
+
+message RequestRelayDiscovery {
+  // Optional X5519 public key of the controller that the relay should use to encrypt the discovery response with
+  bytes controller_public_key = 1;
+}
+
+message RelayDiscovery {
+  string relay_id = 1;
+  RelayInfo relay_info = 2;
+}
+
+message RelayDiscoveryEncrypted {
+  // controller public key must match the public key specified in the RequestRelayDiscovery message
+  bytes controller_public_key = 1;
+  // the relay public key should be randomly generated each time a discovery request is received
+  bytes relay_public_key = 2;
+  // encrypted_relay_discovery contains an encrypted RelayDiscovery message encrypted with AES128-GCM using keys
+  // negotiated with ECDH X5519
+  bytes encrypted_relay_discovery = 3;
 }
 
 message Log {

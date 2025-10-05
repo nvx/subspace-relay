@@ -29,6 +29,9 @@ enum Message_Message {
   reconnect,
   disconnect,
   emulationShortcut,
+  requestRelayDiscovery,
+  relayDiscoveryPlaintext,
+  relayDiscoveryEncrypted,
   notSet
 }
 
@@ -41,6 +44,9 @@ class Message extends $pb.GeneratedMessage {
     Reconnect? reconnect,
     $0.Empty? disconnect,
     EmulationShortcut? emulationShortcut,
+    RequestRelayDiscovery? requestRelayDiscovery,
+    RelayDiscovery? relayDiscoveryPlaintext,
+    RelayDiscoveryEncrypted? relayDiscoveryEncrypted,
   }) {
     final result = create();
     if (payload != null) result.payload = payload;
@@ -50,6 +56,12 @@ class Message extends $pb.GeneratedMessage {
     if (reconnect != null) result.reconnect = reconnect;
     if (disconnect != null) result.disconnect = disconnect;
     if (emulationShortcut != null) result.emulationShortcut = emulationShortcut;
+    if (requestRelayDiscovery != null)
+      result.requestRelayDiscovery = requestRelayDiscovery;
+    if (relayDiscoveryPlaintext != null)
+      result.relayDiscoveryPlaintext = relayDiscoveryPlaintext;
+    if (relayDiscoveryEncrypted != null)
+      result.relayDiscoveryEncrypted = relayDiscoveryEncrypted;
     return result;
   }
 
@@ -70,6 +82,9 @@ class Message extends $pb.GeneratedMessage {
     5: Message_Message.reconnect,
     6: Message_Message.disconnect,
     7: Message_Message.emulationShortcut,
+    8: Message_Message.requestRelayDiscovery,
+    9: Message_Message.relayDiscoveryPlaintext,
+    10: Message_Message.relayDiscoveryEncrypted,
     0: Message_Message.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
@@ -77,7 +92,7 @@ class Message extends $pb.GeneratedMessage {
       package:
           const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
       createEmptyInstance: create)
-    ..oo(0, [1, 2, 3, 4, 5, 6, 7])
+    ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     ..aOM<Payload>(1, _omitFieldNames ? '' : 'payload',
         subBuilder: Payload.create)
     ..aOM<$0.Empty>(2, _omitFieldNames ? '' : 'requestRelayInfo',
@@ -91,10 +106,18 @@ class Message extends $pb.GeneratedMessage {
         subBuilder: $0.Empty.create)
     ..aOM<EmulationShortcut>(7, _omitFieldNames ? '' : 'emulationShortcut',
         subBuilder: EmulationShortcut.create)
+    ..aOM<RequestRelayDiscovery>(
+        8, _omitFieldNames ? '' : 'requestRelayDiscovery',
+        subBuilder: RequestRelayDiscovery.create)
+    ..aOM<RelayDiscovery>(9, _omitFieldNames ? '' : 'relayDiscoveryPlaintext',
+        subBuilder: RelayDiscovery.create)
+    ..aOM<RelayDiscoveryEncrypted>(
+        10, _omitFieldNames ? '' : 'relayDiscoveryEncrypted',
+        subBuilder: RelayDiscoveryEncrypted.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Message clone() => Message()..mergeFromMessage(this);
+  Message clone() => deepCopy();
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
   Message copyWith(void Function(Message) updates) =>
       super.copyWith((message) => updates(message as Message)) as Message;
@@ -112,9 +135,30 @@ class Message extends $pb.GeneratedMessage {
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Message>(create);
   static Message? _defaultInstance;
 
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  @$pb.TagNumber(3)
+  @$pb.TagNumber(4)
+  @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
+  @$pb.TagNumber(9)
+  @$pb.TagNumber(10)
   Message_Message whichMessage() => _Message_MessageByTag[$_whichOneof(0)]!;
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  @$pb.TagNumber(3)
+  @$pb.TagNumber(4)
+  @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
+  @$pb.TagNumber(9)
+  @$pb.TagNumber(10)
   void clearMessage() => $_clearField($_whichOneof(0));
 
+  /// Payloads exchanged between a relay and a controller
   @$pb.TagNumber(1)
   Payload get payload => $_getN(0);
   @$pb.TagNumber(1)
@@ -204,6 +248,52 @@ class Message extends $pb.GeneratedMessage {
   void clearEmulationShortcut() => $_clearField(7);
   @$pb.TagNumber(7)
   EmulationShortcut ensureEmulationShortcut() => $_ensure(6);
+
+  /// Controllers can broadcast a request_relay_discovery message and all connected relays with discovery enabled will
+  /// respond with a relay_discovery response.
+  /// Supporting discovery is opt-in and relays may choose to only support encrypted discovery and optionally whitelist
+  /// specific controller public keys
+  @$pb.TagNumber(8)
+  RequestRelayDiscovery get requestRelayDiscovery => $_getN(7);
+  @$pb.TagNumber(8)
+  set requestRelayDiscovery(RequestRelayDiscovery value) =>
+      $_setField(8, value);
+  @$pb.TagNumber(8)
+  $core.bool hasRequestRelayDiscovery() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearRequestRelayDiscovery() => $_clearField(8);
+  @$pb.TagNumber(8)
+  RequestRelayDiscovery ensureRequestRelayDiscovery() => $_ensure(7);
+
+  /// If a relay has discovery enabled it will emit a relay_discovery_plaintext or relay_discovery_encrypted broadcast
+  /// message on startup and in response to a received request_discovery message.
+  /// Supporting plaintext discovery removes the cryptographic guarantees that a malicious broker or anything that can
+  /// see the broker traffic can not view comms when cryptography using relay_ids is enabled.
+  /// A relay with discovery enabled  will support both plaintext and encrypted discovery unless a whitelisted public
+  /// key is specified at which point only encrypted discovery messages will be supported and the startup broadcast
+  /// will be encrypted with he provided public key
+  @$pb.TagNumber(9)
+  RelayDiscovery get relayDiscoveryPlaintext => $_getN(8);
+  @$pb.TagNumber(9)
+  set relayDiscoveryPlaintext(RelayDiscovery value) => $_setField(9, value);
+  @$pb.TagNumber(9)
+  $core.bool hasRelayDiscoveryPlaintext() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearRelayDiscoveryPlaintext() => $_clearField(9);
+  @$pb.TagNumber(9)
+  RelayDiscovery ensureRelayDiscoveryPlaintext() => $_ensure(8);
+
+  @$pb.TagNumber(10)
+  RelayDiscoveryEncrypted get relayDiscoveryEncrypted => $_getN(9);
+  @$pb.TagNumber(10)
+  set relayDiscoveryEncrypted(RelayDiscoveryEncrypted value) =>
+      $_setField(10, value);
+  @$pb.TagNumber(10)
+  $core.bool hasRelayDiscoveryEncrypted() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearRelayDiscoveryEncrypted() => $_clearField(10);
+  @$pb.TagNumber(10)
+  RelayDiscoveryEncrypted ensureRelayDiscoveryEncrypted() => $_ensure(9);
 }
 
 class Payload extends $pb.GeneratedMessage {
@@ -237,17 +327,14 @@ class Payload extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..a<$core.List<$core.int>>(
         1, _omitFieldNames ? '' : 'payload', $pb.PbFieldType.OY)
-    ..e<PayloadType>(
-        2, _omitFieldNames ? '' : 'payloadType', $pb.PbFieldType.OE,
-        defaultOrMaker: PayloadType.PAYLOAD_TYPE_UNSPECIFIED,
-        valueOf: PayloadType.valueOf,
+    ..aE<PayloadType>(2, _omitFieldNames ? '' : 'payloadType',
         enumValues: PayloadType.values)
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'sequence', $pb.PbFieldType.OU3)
-    ..a<$core.int>(4, _omitFieldNames ? '' : 'control', $pb.PbFieldType.OU3)
+    ..aI(3, _omitFieldNames ? '' : 'sequence', fieldType: $pb.PbFieldType.OU3)
+    ..aI(4, _omitFieldNames ? '' : 'control', fieldType: $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Payload clone() => Payload()..mergeFromMessage(this);
+  Payload clone() => deepCopy();
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
   Payload copyWith(void Function(Payload) updates) =>
       super.copyWith((message) => updates(message as Payload)) as Payload;
@@ -346,14 +433,13 @@ class EmulationShortcut extends $pb.GeneratedMessage {
         3, _omitFieldNames ? '' : 'rapdu', $pb.PbFieldType.OY)
     ..aOB(4, _omitFieldNames ? '' : 'persistent')
     ..aOB(5, _omitFieldNames ? '' : 'sendCapdu')
-    ..pc<EmulationShortcut>(
-        6, _omitFieldNames ? '' : 'chainedNext', $pb.PbFieldType.PM,
+    ..pPM<EmulationShortcut>(6, _omitFieldNames ? '' : 'chainedNext',
         subBuilder: EmulationShortcut.create)
     ..aOB(7, _omitFieldNames ? '' : 'persistReconnect')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  EmulationShortcut clone() => EmulationShortcut()..mergeFromMessage(this);
+  EmulationShortcut clone() => deepCopy();
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
   EmulationShortcut copyWith(void Function(EmulationShortcut) updates) =>
       super.copyWith((message) => updates(message as EmulationShortcut))
@@ -470,14 +556,13 @@ class Reconnect extends $pb.GeneratedMessage {
         3, _omitFieldNames ? '' : 'ats', $pb.PbFieldType.OY)
     ..p<$core.List<$core.int>>(
         4, _omitFieldNames ? '' : 'aidList', $pb.PbFieldType.PY)
-    ..pc<EmulationShortcut>(
-        5, _omitFieldNames ? '' : 'shortcuts', $pb.PbFieldType.PM,
+    ..pPM<EmulationShortcut>(5, _omitFieldNames ? '' : 'shortcuts',
         subBuilder: EmulationShortcut.create)
     ..aOB(6, _omitFieldNames ? '' : 'forceFlushShortcuts')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Reconnect clone() => Reconnect()..mergeFromMessage(this);
+  Reconnect clone() => deepCopy();
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
   Reconnect copyWith(void Function(Reconnect) updates) =>
       super.copyWith((message) => updates(message as Reconnect)) as Reconnect;
@@ -545,6 +630,7 @@ class RelayInfo extends $pb.GeneratedMessage {
     $core.int? rssi,
     $core.bool? supportsShortcut,
     $core.bool? requiresAidList,
+    $core.String? userAgent,
   }) {
     final result = create();
     if (supportedPayloadTypes != null)
@@ -556,6 +642,7 @@ class RelayInfo extends $pb.GeneratedMessage {
     if (rssi != null) result.rssi = rssi;
     if (supportsShortcut != null) result.supportsShortcut = supportsShortcut;
     if (requiresAidList != null) result.requiresAidList = requiresAidList;
+    if (userAgent != null) result.userAgent = userAgent;
     return result;
   }
 
@@ -583,18 +670,16 @@ class RelayInfo extends $pb.GeneratedMessage {
     ..aOS(3, _omitFieldNames ? '' : 'deviceName')
     ..a<$core.List<$core.int>>(
         4, _omitFieldNames ? '' : 'deviceAddress', $pb.PbFieldType.OY)
-    ..e<ConnectionType>(
-        5, _omitFieldNames ? '' : 'connectionType', $pb.PbFieldType.OE,
-        defaultOrMaker: ConnectionType.CONNECTION_TYPE_UNSPECIFIED,
-        valueOf: ConnectionType.valueOf,
+    ..aE<ConnectionType>(5, _omitFieldNames ? '' : 'connectionType',
         enumValues: ConnectionType.values)
-    ..a<$core.int>(6, _omitFieldNames ? '' : 'rssi', $pb.PbFieldType.OS3)
+    ..aI(6, _omitFieldNames ? '' : 'rssi', fieldType: $pb.PbFieldType.OS3)
     ..aOB(7, _omitFieldNames ? '' : 'supportsShortcut')
     ..aOB(8, _omitFieldNames ? '' : 'requiresAidList')
+    ..aOS(9, _omitFieldNames ? '' : 'userAgent')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  RelayInfo clone() => RelayInfo()..mergeFromMessage(this);
+  RelayInfo clone() => deepCopy();
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
   RelayInfo copyWith(void Function(RelayInfo) updates) =>
       super.copyWith((message) => updates(message as RelayInfo)) as RelayInfo;
@@ -683,6 +768,241 @@ class RelayInfo extends $pb.GeneratedMessage {
   $core.bool hasRequiresAidList() => $_has(7);
   @$pb.TagNumber(8)
   void clearRequiresAidList() => $_clearField(8);
+
+  /// user agent is an optional name/version of the relay application
+  @$pb.TagNumber(9)
+  $core.String get userAgent => $_getSZ(8);
+  @$pb.TagNumber(9)
+  set userAgent($core.String value) => $_setString(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasUserAgent() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearUserAgent() => $_clearField(9);
+}
+
+class RequestRelayDiscovery extends $pb.GeneratedMessage {
+  factory RequestRelayDiscovery({
+    $core.List<$core.int>? controllerPublicKey,
+  }) {
+    final result = create();
+    if (controllerPublicKey != null)
+      result.controllerPublicKey = controllerPublicKey;
+    return result;
+  }
+
+  RequestRelayDiscovery._();
+
+  factory RequestRelayDiscovery.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory RequestRelayDiscovery.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'RequestRelayDiscovery',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
+      createEmptyInstance: create)
+    ..a<$core.List<$core.int>>(
+        1, _omitFieldNames ? '' : 'controllerPublicKey', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RequestRelayDiscovery clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RequestRelayDiscovery copyWith(
+          void Function(RequestRelayDiscovery) updates) =>
+      super.copyWith((message) => updates(message as RequestRelayDiscovery))
+          as RequestRelayDiscovery;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static RequestRelayDiscovery create() => RequestRelayDiscovery._();
+  @$core.override
+  RequestRelayDiscovery createEmptyInstance() => create();
+  static $pb.PbList<RequestRelayDiscovery> createRepeated() =>
+      $pb.PbList<RequestRelayDiscovery>();
+  @$core.pragma('dart2js:noInline')
+  static RequestRelayDiscovery getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<RequestRelayDiscovery>(create);
+  static RequestRelayDiscovery? _defaultInstance;
+
+  /// Optional X5519 public key of the controller that the relay should use to encrypt the discovery response with
+  @$pb.TagNumber(1)
+  $core.List<$core.int> get controllerPublicKey => $_getN(0);
+  @$pb.TagNumber(1)
+  set controllerPublicKey($core.List<$core.int> value) => $_setBytes(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasControllerPublicKey() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearControllerPublicKey() => $_clearField(1);
+}
+
+class RelayDiscovery extends $pb.GeneratedMessage {
+  factory RelayDiscovery({
+    $core.String? relayId,
+    RelayInfo? relayInfo,
+  }) {
+    final result = create();
+    if (relayId != null) result.relayId = relayId;
+    if (relayInfo != null) result.relayInfo = relayInfo;
+    return result;
+  }
+
+  RelayDiscovery._();
+
+  factory RelayDiscovery.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory RelayDiscovery.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'RelayDiscovery',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'relayId')
+    ..aOM<RelayInfo>(2, _omitFieldNames ? '' : 'relayInfo',
+        subBuilder: RelayInfo.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RelayDiscovery clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RelayDiscovery copyWith(void Function(RelayDiscovery) updates) =>
+      super.copyWith((message) => updates(message as RelayDiscovery))
+          as RelayDiscovery;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static RelayDiscovery create() => RelayDiscovery._();
+  @$core.override
+  RelayDiscovery createEmptyInstance() => create();
+  static $pb.PbList<RelayDiscovery> createRepeated() =>
+      $pb.PbList<RelayDiscovery>();
+  @$core.pragma('dart2js:noInline')
+  static RelayDiscovery getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<RelayDiscovery>(create);
+  static RelayDiscovery? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get relayId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set relayId($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasRelayId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearRelayId() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  RelayInfo get relayInfo => $_getN(1);
+  @$pb.TagNumber(2)
+  set relayInfo(RelayInfo value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasRelayInfo() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRelayInfo() => $_clearField(2);
+  @$pb.TagNumber(2)
+  RelayInfo ensureRelayInfo() => $_ensure(1);
+}
+
+class RelayDiscoveryEncrypted extends $pb.GeneratedMessage {
+  factory RelayDiscoveryEncrypted({
+    $core.List<$core.int>? controllerPublicKey,
+    $core.List<$core.int>? relayPublicKey,
+    $core.List<$core.int>? encryptedRelayDiscovery,
+  }) {
+    final result = create();
+    if (controllerPublicKey != null)
+      result.controllerPublicKey = controllerPublicKey;
+    if (relayPublicKey != null) result.relayPublicKey = relayPublicKey;
+    if (encryptedRelayDiscovery != null)
+      result.encryptedRelayDiscovery = encryptedRelayDiscovery;
+    return result;
+  }
+
+  RelayDiscoveryEncrypted._();
+
+  factory RelayDiscoveryEncrypted.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory RelayDiscoveryEncrypted.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'RelayDiscoveryEncrypted',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
+      createEmptyInstance: create)
+    ..a<$core.List<$core.int>>(
+        1, _omitFieldNames ? '' : 'controllerPublicKey', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(
+        2, _omitFieldNames ? '' : 'relayPublicKey', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(
+        3, _omitFieldNames ? '' : 'encryptedRelayDiscovery', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RelayDiscoveryEncrypted clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RelayDiscoveryEncrypted copyWith(
+          void Function(RelayDiscoveryEncrypted) updates) =>
+      super.copyWith((message) => updates(message as RelayDiscoveryEncrypted))
+          as RelayDiscoveryEncrypted;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static RelayDiscoveryEncrypted create() => RelayDiscoveryEncrypted._();
+  @$core.override
+  RelayDiscoveryEncrypted createEmptyInstance() => create();
+  static $pb.PbList<RelayDiscoveryEncrypted> createRepeated() =>
+      $pb.PbList<RelayDiscoveryEncrypted>();
+  @$core.pragma('dart2js:noInline')
+  static RelayDiscoveryEncrypted getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<RelayDiscoveryEncrypted>(create);
+  static RelayDiscoveryEncrypted? _defaultInstance;
+
+  /// controller public key must match the public key specified in the RequestRelayDiscovery message
+  @$pb.TagNumber(1)
+  $core.List<$core.int> get controllerPublicKey => $_getN(0);
+  @$pb.TagNumber(1)
+  set controllerPublicKey($core.List<$core.int> value) => $_setBytes(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasControllerPublicKey() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearControllerPublicKey() => $_clearField(1);
+
+  /// the relay public key should be randomly generated each time a discovery request is received
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get relayPublicKey => $_getN(1);
+  @$pb.TagNumber(2)
+  set relayPublicKey($core.List<$core.int> value) => $_setBytes(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasRelayPublicKey() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRelayPublicKey() => $_clearField(2);
+
+  /// encrypted_relay_discovery contains an encrypted RelayDiscovery message encrypted with AES128-GCM using keys
+  /// negotiated with ECDH X5519
+  @$pb.TagNumber(3)
+  $core.List<$core.int> get encryptedRelayDiscovery => $_getN(2);
+  @$pb.TagNumber(3)
+  set encryptedRelayDiscovery($core.List<$core.int> value) =>
+      $_setBytes(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasEncryptedRelayDiscovery() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearEncryptedRelayDiscovery() => $_clearField(3);
 }
 
 class Log extends $pb.GeneratedMessage {
@@ -712,7 +1032,7 @@ class Log extends $pb.GeneratedMessage {
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Log clone() => Log()..mergeFromMessage(this);
+  Log clone() => deepCopy();
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
   Log copyWith(void Function(Log) updates) =>
       super.copyWith((message) => updates(message as Log)) as Log;
