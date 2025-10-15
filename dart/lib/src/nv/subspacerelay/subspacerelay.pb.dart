@@ -783,10 +783,12 @@ class RelayInfo extends $pb.GeneratedMessage {
 class RequestRelayDiscovery extends $pb.GeneratedMessage {
   factory RequestRelayDiscovery({
     $core.List<$core.int>? controllerPublicKey,
+    PayloadType? payloadType,
   }) {
     final result = create();
     if (controllerPublicKey != null)
       result.controllerPublicKey = controllerPublicKey;
+    if (payloadType != null) result.payloadType = payloadType;
     return result;
   }
 
@@ -806,6 +808,8 @@ class RequestRelayDiscovery extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..a<$core.List<$core.int>>(
         1, _omitFieldNames ? '' : 'controllerPublicKey', $pb.PbFieldType.OY)
+    ..aE<PayloadType>(2, _omitFieldNames ? '' : 'payloadType',
+        enumValues: PayloadType.values)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -839,6 +843,17 @@ class RequestRelayDiscovery extends $pb.GeneratedMessage {
   $core.bool hasControllerPublicKey() => $_has(0);
   @$pb.TagNumber(1)
   void clearControllerPublicKey() => $_clearField(1);
+
+  /// Optional payload type the controller is looking for. If specified  relays should only respond if it supports the
+  /// provided payload type.
+  @$pb.TagNumber(2)
+  PayloadType get payloadType => $_getN(1);
+  @$pb.TagNumber(2)
+  set payloadType(PayloadType value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasPayloadType() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPayloadType() => $_clearField(2);
 }
 
 class RelayDiscovery extends $pb.GeneratedMessage {

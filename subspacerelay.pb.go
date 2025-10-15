@@ -758,8 +758,11 @@ type RequestRelayDiscovery struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Optional X5519 public key of the controller that the relay should use to encrypt the discovery response with
 	ControllerPublicKey []byte `protobuf:"bytes,1,opt,name=controller_public_key,json=controllerPublicKey,proto3" json:"controller_public_key,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// Optional payload type the controller is looking for. If specified  relays should only respond if it supports the
+	// provided payload type.
+	PayloadType   PayloadType `protobuf:"varint,2,opt,name=payload_type,json=payloadType,proto3,enum=nv.subspacerelay.PayloadType" json:"payload_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *RequestRelayDiscovery) Reset() {
@@ -797,6 +800,13 @@ func (x *RequestRelayDiscovery) GetControllerPublicKey() []byte {
 		return x.ControllerPublicKey
 	}
 	return nil
+}
+
+func (x *RequestRelayDiscovery) GetPayloadType() PayloadType {
+	if x != nil {
+		return x.PayloadType
+	}
+	return PayloadType_PAYLOAD_TYPE_UNSPECIFIED
 }
 
 type RelayDiscovery struct {
@@ -1016,9 +1026,10 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\x11supports_shortcut\x18\a \x01(\bR\x10supportsShortcut\x12*\n" +
 	"\x11requires_aid_list\x18\b \x01(\bR\x0frequiresAidList\x12\x1d\n" +
 	"\n" +
-	"user_agent\x18\t \x01(\tR\tuserAgent\"K\n" +
+	"user_agent\x18\t \x01(\tR\tuserAgent\"\x8d\x01\n" +
 	"\x15RequestRelayDiscovery\x122\n" +
-	"\x15controller_public_key\x18\x01 \x01(\fR\x13controllerPublicKey\"g\n" +
+	"\x15controller_public_key\x18\x01 \x01(\fR\x13controllerPublicKey\x12@\n" +
+	"\fpayload_type\x18\x02 \x01(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\vpayloadType\"g\n" +
 	"\x0eRelayDiscovery\x12\x19\n" +
 	"\brelay_id\x18\x01 \x01(\tR\arelayId\x12:\n" +
 	"\n" +
@@ -1089,12 +1100,13 @@ var file_nv_subspacerelay_subspacerelay_proto_depIdxs = []int32{
 	4,  // 12: nv.subspacerelay.Reconnect.shortcuts:type_name -> nv.subspacerelay.EmulationShortcut
 	0,  // 13: nv.subspacerelay.RelayInfo.supported_payload_types:type_name -> nv.subspacerelay.PayloadType
 	1,  // 14: nv.subspacerelay.RelayInfo.connection_type:type_name -> nv.subspacerelay.ConnectionType
-	6,  // 15: nv.subspacerelay.RelayDiscovery.relay_info:type_name -> nv.subspacerelay.RelayInfo
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	0,  // 15: nv.subspacerelay.RequestRelayDiscovery.payload_type:type_name -> nv.subspacerelay.PayloadType
+	6,  // 16: nv.subspacerelay.RelayDiscovery.relay_info:type_name -> nv.subspacerelay.RelayInfo
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_nv_subspacerelay_subspacerelay_proto_init() }

@@ -1,3 +1,7 @@
+## v1.0.4
+
+* Tweak discovery message
+
 ## v1.0.3
 
 * Add discovery messages

@@ -145,6 +145,9 @@ message RelayInfo {
 message RequestRelayDiscovery {
   // Optional X5519 public key of the controller that the relay should use to encrypt the discovery response with
   bytes controller_public_key = 1;
+  // Optional payload type the controller is looking for. If specified  relays should only respond if it supports the
+  // provided payload type.
+  PayloadType payload_type = 2;
 }
 
 message RelayDiscovery {
