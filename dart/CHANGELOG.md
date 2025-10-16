@@ -1,3 +1,7 @@
+## v1.0.6
+
+* Expose Empty type
+
 ## v1.0.5
 
 * Tweak discovery message

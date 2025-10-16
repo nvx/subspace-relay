@@ -1,6 +1,6 @@
 name: subspace_relay_pb
 description: Subspace Relay RFID relay project protobuf generated library
-version: 1.0.5
+version: 1.0.6
 
 repository: https://github.com/nvx/subspace-relay
 
