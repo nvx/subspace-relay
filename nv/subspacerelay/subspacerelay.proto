@@ -60,8 +60,11 @@ enum PayloadType {
   // Payload is raw cardhopper frame
   PAYLOAD_TYPE_CARDHOPPER = 2;
   // Relay device is attached to a PCSC-like reader and can exchange APDUs to a smart card
+  // This is most commonly used with CONNECTION_TYPE_PCSC, but may also be used with CONNECTION_TYPE_NFC and
+  // CONNECTION_TYPE_BLE when acting as a reader
   PAYLOAD_TYPE_PCSC_READER = 3;
   // Relay device is attached to a PCSC-like reader that supports control commands
+  // This is normally used with CONNECTION_TYPE_PCSC or CONNECTION_TYPE_PCSC_DIRECT
   PAYLOAD_TYPE_PCSC_READER_CONTROL = 5;
   // Relay device is emulating a smart card and can respond to APDUs from a reader
   PAYLOAD_TYPE_PCSC_CARD = 4;
@@ -126,7 +129,7 @@ message Reconnect {
 message RelayInfo {
   repeated PayloadType supported_payload_types = 1;
   ConnectionType connection_type = 5;
-  // atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types
+  // atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types and supported by the reader
   bytes atr = 2;
   // device_name is only present when available, eg for PCSC readers or when connected to a BLE peripheral
   string device_name = 3;
@@ -140,6 +143,11 @@ message RelayInfo {
   bool requires_aid_list = 8;
   // user agent is an optional name/version of the relay application
   string user_agent = 9;
+  // Optional parameters for NFC cards. May not always be populated, eg PCSC readers may require querying via pseudo APDUs
+  bytes uid = 10;
+  bytes atqa = 11;
+  bytes sak = 12;
+  bytes ats = 13;
 }
 
 message RequestRelayDiscovery {

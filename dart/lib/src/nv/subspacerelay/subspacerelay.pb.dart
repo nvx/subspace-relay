@@ -631,6 +631,10 @@ class RelayInfo extends $pb.GeneratedMessage {
     $core.bool? supportsShortcut,
     $core.bool? requiresAidList,
     $core.String? userAgent,
+    $core.List<$core.int>? uid,
+    $core.List<$core.int>? atqa,
+    $core.List<$core.int>? sak,
+    $core.List<$core.int>? ats,
   }) {
     final result = create();
     if (supportedPayloadTypes != null)
@@ -643,6 +647,10 @@ class RelayInfo extends $pb.GeneratedMessage {
     if (supportsShortcut != null) result.supportsShortcut = supportsShortcut;
     if (requiresAidList != null) result.requiresAidList = requiresAidList;
     if (userAgent != null) result.userAgent = userAgent;
+    if (uid != null) result.uid = uid;
+    if (atqa != null) result.atqa = atqa;
+    if (sak != null) result.sak = sak;
+    if (ats != null) result.ats = ats;
     return result;
   }
 
@@ -676,6 +684,14 @@ class RelayInfo extends $pb.GeneratedMessage {
     ..aOB(7, _omitFieldNames ? '' : 'supportsShortcut')
     ..aOB(8, _omitFieldNames ? '' : 'requiresAidList')
     ..aOS(9, _omitFieldNames ? '' : 'userAgent')
+    ..a<$core.List<$core.int>>(
+        10, _omitFieldNames ? '' : 'uid', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(
+        11, _omitFieldNames ? '' : 'atqa', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(
+        12, _omitFieldNames ? '' : 'sak', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(
+        13, _omitFieldNames ? '' : 'ats', $pb.PbFieldType.OY)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -700,7 +716,7 @@ class RelayInfo extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $pb.PbList<PayloadType> get supportedPayloadTypes => $_getList(0);
 
-  /// atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types
+  /// atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types and supported by the reader
   @$pb.TagNumber(2)
   $core.List<$core.int> get atr => $_getN(1);
   @$pb.TagNumber(2)
@@ -778,6 +794,43 @@ class RelayInfo extends $pb.GeneratedMessage {
   $core.bool hasUserAgent() => $_has(8);
   @$pb.TagNumber(9)
   void clearUserAgent() => $_clearField(9);
+
+  /// Optional parameters for NFC cards. May not always be populated, eg PCSC readers may require querying via pseudo APDUs
+  @$pb.TagNumber(10)
+  $core.List<$core.int> get uid => $_getN(9);
+  @$pb.TagNumber(10)
+  set uid($core.List<$core.int> value) => $_setBytes(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasUid() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearUid() => $_clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.List<$core.int> get atqa => $_getN(10);
+  @$pb.TagNumber(11)
+  set atqa($core.List<$core.int> value) => $_setBytes(10, value);
+  @$pb.TagNumber(11)
+  $core.bool hasAtqa() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearAtqa() => $_clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.List<$core.int> get sak => $_getN(11);
+  @$pb.TagNumber(12)
+  set sak($core.List<$core.int> value) => $_setBytes(11, value);
+  @$pb.TagNumber(12)
+  $core.bool hasSak() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearSak() => $_clearField(12);
+
+  @$pb.TagNumber(13)
+  $core.List<$core.int> get ats => $_getN(12);
+  @$pb.TagNumber(13)
+  set ats($core.List<$core.int> value) => $_setBytes(12, value);
+  @$pb.TagNumber(13)
+  $core.bool hasAts() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearAts() => $_clearField(13);
 }
 
 class RequestRelayDiscovery extends $pb.GeneratedMessage {

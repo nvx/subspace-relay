@@ -1,3 +1,7 @@
+## v1.0.7
+
+* Add RelayInfo fields for 14443a card details
+
 ## v1.0.6
 
 * Expose Empty type

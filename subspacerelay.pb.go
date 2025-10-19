@@ -33,8 +33,11 @@ const (
 	// Payload is raw cardhopper frame
 	PayloadType_PAYLOAD_TYPE_CARDHOPPER PayloadType = 2
 	// Relay device is attached to a PCSC-like reader and can exchange APDUs to a smart card
+	// This is most commonly used with CONNECTION_TYPE_PCSC, but may also be used with CONNECTION_TYPE_NFC and
+	// CONNECTION_TYPE_BLE when acting as a reader
 	PayloadType_PAYLOAD_TYPE_PCSC_READER PayloadType = 3
 	// Relay device is attached to a PCSC-like reader that supports control commands
+	// This is normally used with CONNECTION_TYPE_PCSC or CONNECTION_TYPE_PCSC_DIRECT
 	PayloadType_PAYLOAD_TYPE_PCSC_READER_CONTROL PayloadType = 5
 	// Relay device is emulating a smart card and can respond to APDUs from a reader
 	PayloadType_PAYLOAD_TYPE_PCSC_CARD PayloadType = 4
@@ -643,7 +646,7 @@ type RelayInfo struct {
 	state                 protoimpl.MessageState `protogen:"open.v1"`
 	SupportedPayloadTypes []PayloadType          `protobuf:"varint,1,rep,packed,name=supported_payload_types,json=supportedPayloadTypes,proto3,enum=nv.subspacerelay.PayloadType" json:"supported_payload_types,omitempty"`
 	ConnectionType        ConnectionType         `protobuf:"varint,5,opt,name=connection_type,json=connectionType,proto3,enum=nv.subspacerelay.ConnectionType" json:"connection_type,omitempty"`
-	// atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types
+	// atr is only present when PAYLOAD_TYPE_PCSC_READER is in supported_payload_types and supported by the reader
 	Atr []byte `protobuf:"bytes,2,opt,name=atr,proto3" json:"atr,omitempty"`
 	// device_name is only present when available, eg for PCSC readers or when connected to a BLE peripheral
 	DeviceName string `protobuf:"bytes,3,opt,name=device_name,json=deviceName,proto3" json:"device_name,omitempty"`
@@ -656,7 +659,12 @@ type RelayInfo struct {
 	// true iff card emulation requires an explicit list of AIDs in the Reconnect message
 	RequiresAidList bool `protobuf:"varint,8,opt,name=requires_aid_list,json=requiresAidList,proto3" json:"requires_aid_list,omitempty"`
 	// user agent is an optional name/version of the relay application
-	UserAgent     string `protobuf:"bytes,9,opt,name=user_agent,json=userAgent,proto3" json:"user_agent,omitempty"`
+	UserAgent string `protobuf:"bytes,9,opt,name=user_agent,json=userAgent,proto3" json:"user_agent,omitempty"`
+	// Optional parameters for NFC cards. May not always be populated, eg PCSC readers may require querying via pseudo APDUs
+	Uid           []byte `protobuf:"bytes,10,opt,name=uid,proto3" json:"uid,omitempty"`
+	Atqa          []byte `protobuf:"bytes,11,opt,name=atqa,proto3" json:"atqa,omitempty"`
+	Sak           []byte `protobuf:"bytes,12,opt,name=sak,proto3" json:"sak,omitempty"`
+	Ats           []byte `protobuf:"bytes,13,opt,name=ats,proto3" json:"ats,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -752,6 +760,34 @@ func (x *RelayInfo) GetUserAgent() string {
 		return x.UserAgent
 	}
 	return ""
+}
+
+func (x *RelayInfo) GetUid() []byte {
+	if x != nil {
+		return x.Uid
+	}
+	return nil
+}
+
+func (x *RelayInfo) GetAtqa() []byte {
+	if x != nil {
+		return x.Atqa
+	}
+	return nil
+}
+
+func (x *RelayInfo) GetSak() []byte {
+	if x != nil {
+		return x.Sak
+	}
+	return nil
+}
+
+func (x *RelayInfo) GetAts() []byte {
+	if x != nil {
+		return x.Ats
+	}
+	return nil
 }
 
 type RequestRelayDiscovery struct {
@@ -1014,7 +1050,7 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\x03ats\x18\x03 \x01(\fR\x03ats\x12\x19\n" +
 	"\baid_list\x18\x04 \x03(\fR\aaidList\x12A\n" +
 	"\tshortcuts\x18\x05 \x03(\v2#.nv.subspacerelay.EmulationShortcutR\tshortcuts\x122\n" +
-	"\x15force_flush_shortcuts\x18\x06 \x01(\bR\x13forceFlushShortcutsJ\x04\b\x01\x10\x02\"\x93\x03\n" +
+	"\x15force_flush_shortcuts\x18\x06 \x01(\bR\x13forceFlushShortcutsJ\x04\b\x01\x10\x02\"\xdd\x03\n" +
 	"\tRelayInfo\x12U\n" +
 	"\x17supported_payload_types\x18\x01 \x03(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\x15supportedPayloadTypes\x12I\n" +
 	"\x0fconnection_type\x18\x05 \x01(\x0e2 .nv.subspacerelay.ConnectionTypeR\x0econnectionType\x12\x10\n" +
@@ -1026,7 +1062,12 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\x11supports_shortcut\x18\a \x01(\bR\x10supportsShortcut\x12*\n" +
 	"\x11requires_aid_list\x18\b \x01(\bR\x0frequiresAidList\x12\x1d\n" +
 	"\n" +
-	"user_agent\x18\t \x01(\tR\tuserAgent\"\x8d\x01\n" +
+	"user_agent\x18\t \x01(\tR\tuserAgent\x12\x10\n" +
+	"\x03uid\x18\n" +
+	" \x01(\fR\x03uid\x12\x12\n" +
+	"\x04atqa\x18\v \x01(\fR\x04atqa\x12\x10\n" +
+	"\x03sak\x18\f \x01(\fR\x03sak\x12\x10\n" +
+	"\x03ats\x18\r \x01(\fR\x03ats\"\x8d\x01\n" +
 	"\x15RequestRelayDiscovery\x122\n" +
 	"\x15controller_public_key\x18\x01 \x01(\fR\x13controllerPublicKey\x12@\n" +
 	"\fpayload_type\x18\x02 \x01(\x0e2\x1d.nv.subspacerelay.PayloadTypeR\vpayloadType\"g\n" +

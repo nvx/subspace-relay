@@ -29,10 +29,13 @@ class PayloadType extends $pb.ProtobufEnum {
       PayloadType._(2, _omitEnumNames ? '' : 'PAYLOAD_TYPE_CARDHOPPER');
 
   /// Relay device is attached to a PCSC-like reader and can exchange APDUs to a smart card
+  /// This is most commonly used with CONNECTION_TYPE_PCSC, but may also be used with CONNECTION_TYPE_NFC and
+  /// CONNECTION_TYPE_BLE when acting as a reader
   static const PayloadType PAYLOAD_TYPE_PCSC_READER =
       PayloadType._(3, _omitEnumNames ? '' : 'PAYLOAD_TYPE_PCSC_READER');
 
   /// Relay device is attached to a PCSC-like reader that supports control commands
+  /// This is normally used with CONNECTION_TYPE_PCSC or CONNECTION_TYPE_PCSC_DIRECT
   static const PayloadType PAYLOAD_TYPE_PCSC_READER_CONTROL = PayloadType._(
       5, _omitEnumNames ? '' : 'PAYLOAD_TYPE_PCSC_READER_CONTROL');
 

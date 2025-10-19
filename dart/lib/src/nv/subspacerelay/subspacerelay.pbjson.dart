@@ -312,6 +312,10 @@ const RelayInfo$json = {
     },
     {'1': 'requires_aid_list', '3': 8, '4': 1, '5': 8, '10': 'requiresAidList'},
     {'1': 'user_agent', '3': 9, '4': 1, '5': 9, '10': 'userAgent'},
+    {'1': 'uid', '3': 10, '4': 1, '5': 12, '10': 'uid'},
+    {'1': 'atqa', '3': 11, '4': 1, '5': 12, '10': 'atqa'},
+    {'1': 'sak', '3': 12, '4': 1, '5': 12, '10': 'sak'},
+    {'1': 'ats', '3': 13, '4': 1, '5': 12, '10': 'ats'},
   ],
 };
 
@@ -324,7 +328,8 @@ final $typed_data.Uint8List relayInfoDescriptor = $convert.base64Decode(
     'bWUSJQoOZGV2aWNlX2FkZHJlc3MYBCABKAxSDWRldmljZUFkZHJlc3MSEgoEcnNzaRgGIAEoEV'
     'IEcnNzaRIrChFzdXBwb3J0c19zaG9ydGN1dBgHIAEoCFIQc3VwcG9ydHNTaG9ydGN1dBIqChFy'
     'ZXF1aXJlc19haWRfbGlzdBgIIAEoCFIPcmVxdWlyZXNBaWRMaXN0Eh0KCnVzZXJfYWdlbnQYCS'
-    'ABKAlSCXVzZXJBZ2VudA==');
+    'ABKAlSCXVzZXJBZ2VudBIQCgN1aWQYCiABKAxSA3VpZBISCgRhdHFhGAsgASgMUgRhdHFhEhAK'
+    'A3NhaxgMIAEoDFIDc2FrEhAKA2F0cxgNIAEoDFIDYXRz');
 
 @$core.Deprecated('Use requestRelayDiscoveryDescriptor instead')
 const RequestRelayDiscovery$json = {
