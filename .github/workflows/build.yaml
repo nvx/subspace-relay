@@ -15,9 +15,9 @@ jobs:
   buf:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           check-latest: true
 
@@ -51,6 +51,7 @@ jobs:
         uses: bufbuild/buf-action@v1
         with:
           token: ${{ secrets.BUF_TOKEN }}
+          push_disable_create: true
 
       - uses: dart-lang/setup-dart@v1
       - name: Install dart dependencies
