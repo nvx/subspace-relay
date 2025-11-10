@@ -1,3 +1,7 @@
+## v1.0.9
+
+* Fix for dart publishing
+
 ## v1.0.8
 
 * Make PayloadType repeated in RequestRelayDiscovery
