@@ -343,12 +343,12 @@ const RequestRelayDiscovery$json = {
       '10': 'controllerPublicKey'
     },
     {
-      '1': 'payload_type',
+      '1': 'payload_types',
       '3': 2,
-      '4': 1,
+      '4': 3,
       '5': 14,
       '6': '.nv.subspacerelay.PayloadType',
-      '10': 'payloadType'
+      '10': 'payloadTypes'
     },
   ],
 };
@@ -356,8 +356,8 @@ const RequestRelayDiscovery$json = {
 /// Descriptor for `RequestRelayDiscovery`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List requestRelayDiscoveryDescriptor = $convert.base64Decode(
     'ChVSZXF1ZXN0UmVsYXlEaXNjb3ZlcnkSMgoVY29udHJvbGxlcl9wdWJsaWNfa2V5GAEgASgMUh'
-    'Njb250cm9sbGVyUHVibGljS2V5EkAKDHBheWxvYWRfdHlwZRgCIAEoDjIdLm52LnN1YnNwYWNl'
-    'cmVsYXkuUGF5bG9hZFR5cGVSC3BheWxvYWRUeXBl');
+    'Njb250cm9sbGVyUHVibGljS2V5EkIKDXBheWxvYWRfdHlwZXMYAiADKA4yHS5udi5zdWJzcGFj'
+    'ZXJlbGF5LlBheWxvYWRUeXBlUgxwYXlsb2FkVHlwZXM=');
 
 @$core.Deprecated('Use relayDiscoveryDescriptor instead')
 const RelayDiscovery$json = {

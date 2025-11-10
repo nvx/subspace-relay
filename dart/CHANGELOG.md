@@ -1,3 +1,7 @@
+## v1.0.8
+
+* Make PayloadType repeated in RequestRelayDiscovery
+
 ## v1.0.7
 
 * Add RelayInfo fields for 14443a card details

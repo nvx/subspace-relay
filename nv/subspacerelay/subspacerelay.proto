@@ -155,7 +155,7 @@ message RequestRelayDiscovery {
   bytes controller_public_key = 1;
   // Optional payload type the controller is looking for. If specified  relays should only respond if it supports the
   // provided payload type.
-  PayloadType payload_type = 2;
+  repeated PayloadType payload_types = 2;
 }
 
 message RelayDiscovery {

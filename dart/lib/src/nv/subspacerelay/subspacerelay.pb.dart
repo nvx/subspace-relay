@@ -129,7 +129,6 @@ class Message extends $pb.GeneratedMessage {
   static Message create() => Message._();
   @$core.override
   Message createEmptyInstance() => create();
-  static $pb.PbList<Message> createRepeated() => $pb.PbList<Message>();
   @$core.pragma('dart2js:noInline')
   static Message getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Message>(create);
@@ -346,7 +345,6 @@ class Payload extends $pb.GeneratedMessage {
   static Payload create() => Payload._();
   @$core.override
   Payload createEmptyInstance() => create();
-  static $pb.PbList<Payload> createRepeated() => $pb.PbList<Payload>();
   @$core.pragma('dart2js:noInline')
   static Payload getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Payload>(create);
@@ -452,8 +450,6 @@ class EmulationShortcut extends $pb.GeneratedMessage {
   static EmulationShortcut create() => EmulationShortcut._();
   @$core.override
   EmulationShortcut createEmptyInstance() => create();
-  static $pb.PbList<EmulationShortcut> createRepeated() =>
-      $pb.PbList<EmulationShortcut>();
   @$core.pragma('dart2js:noInline')
   static EmulationShortcut getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<EmulationShortcut>(create);
@@ -574,7 +570,6 @@ class Reconnect extends $pb.GeneratedMessage {
   static Reconnect create() => Reconnect._();
   @$core.override
   Reconnect createEmptyInstance() => create();
-  static $pb.PbList<Reconnect> createRepeated() => $pb.PbList<Reconnect>();
   @$core.pragma('dart2js:noInline')
   static Reconnect getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Reconnect>(create);
@@ -707,7 +702,6 @@ class RelayInfo extends $pb.GeneratedMessage {
   static RelayInfo create() => RelayInfo._();
   @$core.override
   RelayInfo createEmptyInstance() => create();
-  static $pb.PbList<RelayInfo> createRepeated() => $pb.PbList<RelayInfo>();
   @$core.pragma('dart2js:noInline')
   static RelayInfo getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RelayInfo>(create);
@@ -836,12 +830,12 @@ class RelayInfo extends $pb.GeneratedMessage {
 class RequestRelayDiscovery extends $pb.GeneratedMessage {
   factory RequestRelayDiscovery({
     $core.List<$core.int>? controllerPublicKey,
-    PayloadType? payloadType,
+    $core.Iterable<PayloadType>? payloadTypes,
   }) {
     final result = create();
     if (controllerPublicKey != null)
       result.controllerPublicKey = controllerPublicKey;
-    if (payloadType != null) result.payloadType = payloadType;
+    if (payloadTypes != null) result.payloadTypes.addAll(payloadTypes);
     return result;
   }
 
@@ -861,8 +855,11 @@ class RequestRelayDiscovery extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..a<$core.List<$core.int>>(
         1, _omitFieldNames ? '' : 'controllerPublicKey', $pb.PbFieldType.OY)
-    ..aE<PayloadType>(2, _omitFieldNames ? '' : 'payloadType',
-        enumValues: PayloadType.values)
+    ..pc<PayloadType>(
+        2, _omitFieldNames ? '' : 'payloadTypes', $pb.PbFieldType.KE,
+        valueOf: PayloadType.valueOf,
+        enumValues: PayloadType.values,
+        defaultEnumValue: PayloadType.PAYLOAD_TYPE_UNSPECIFIED)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -880,8 +877,6 @@ class RequestRelayDiscovery extends $pb.GeneratedMessage {
   static RequestRelayDiscovery create() => RequestRelayDiscovery._();
   @$core.override
   RequestRelayDiscovery createEmptyInstance() => create();
-  static $pb.PbList<RequestRelayDiscovery> createRepeated() =>
-      $pb.PbList<RequestRelayDiscovery>();
   @$core.pragma('dart2js:noInline')
   static RequestRelayDiscovery getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<RequestRelayDiscovery>(create);
@@ -900,13 +895,7 @@ class RequestRelayDiscovery extends $pb.GeneratedMessage {
   /// Optional payload type the controller is looking for. If specified  relays should only respond if it supports the
   /// provided payload type.
   @$pb.TagNumber(2)
-  PayloadType get payloadType => $_getN(1);
-  @$pb.TagNumber(2)
-  set payloadType(PayloadType value) => $_setField(2, value);
-  @$pb.TagNumber(2)
-  $core.bool hasPayloadType() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearPayloadType() => $_clearField(2);
+  $pb.PbList<PayloadType> get payloadTypes => $_getList(1);
 }
 
 class RelayDiscovery extends $pb.GeneratedMessage {
@@ -953,8 +942,6 @@ class RelayDiscovery extends $pb.GeneratedMessage {
   static RelayDiscovery create() => RelayDiscovery._();
   @$core.override
   RelayDiscovery createEmptyInstance() => create();
-  static $pb.PbList<RelayDiscovery> createRepeated() =>
-      $pb.PbList<RelayDiscovery>();
   @$core.pragma('dart2js:noInline')
   static RelayDiscovery getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<RelayDiscovery>(create);
@@ -1033,8 +1020,6 @@ class RelayDiscoveryEncrypted extends $pb.GeneratedMessage {
   static RelayDiscoveryEncrypted create() => RelayDiscoveryEncrypted._();
   @$core.override
   RelayDiscoveryEncrypted createEmptyInstance() => create();
-  static $pb.PbList<RelayDiscoveryEncrypted> createRepeated() =>
-      $pb.PbList<RelayDiscoveryEncrypted>();
   @$core.pragma('dart2js:noInline')
   static RelayDiscoveryEncrypted getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<RelayDiscoveryEncrypted>(create);
@@ -1112,7 +1097,6 @@ class Log extends $pb.GeneratedMessage {
   static Log create() => Log._();
   @$core.override
   Log createEmptyInstance() => create();
-  static $pb.PbList<Log> createRepeated() => $pb.PbList<Log>();
   @$core.pragma('dart2js:noInline')
   static Log getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Log>(create);
