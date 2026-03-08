@@ -44,13 +44,13 @@ running the `hf_cardhopper` standalone mode as a card emulator
 * [subspace-relay-pcsc-controller-demo](https://github.com/nvx/subspace-relay-pcsc-controller-demo) a demo controller
 that can talk to eg `subspace-relay-pcsc` to exchange APDUs
 
-## Android HCE
-[subspace_relay_mobile](https://github.com/nvx/subspace_relay_mobile) is a flutter/dart Android app that uses Android HCE
-to emulate a card. Also available on the
-[Google Play Store](https://play.google.com/store/apps/details?id=io.nv.subspacerelay.mobile) (currently in closed
-alpha until approved by Google, message me for an invite).
+## Android App
+<a href="https://play.google.com/store/apps/details?id=io.nv.subspacerelay.mobile" alt="Get it on Google Play"><img src="https://raw.githubusercontent.com/pioug/google-play-badges/refs/heads/main/svg/en.svg" height="70"></a>
 
-The intention is to eventually support other modes such as acting as a reader, acting as a controller, and using
+[subspace_relay_mobile](https://github.com/nvx/subspace_relay_mobile) is a flutter/dart Android app that uses Android HCE
+to emulate a card and NFC APIs to act as a reader.
+
+The intention is to eventually support other modes such as acting as a controller, and using
 externally connected devices like the Chameleon Ultra as a reader or emulator too.
 
 # Generated Protobuf Libraries Usage
