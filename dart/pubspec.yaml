@@ -8,4 +8,4 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
-  protobuf: ^5.0.0
+  protobuf: ^6.0.0
