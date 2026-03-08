@@ -1,3 +1,8 @@
+## v1.0.10
+
+* Update codegen, now uses well known types from protobuf package
+* Bump protobuf dependency to 6.0.0
+
 ## v1.0.9
 
 * Fix for dart publishing
