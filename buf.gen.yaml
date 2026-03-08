@@ -6,5 +6,4 @@ plugins:
       - module=github.com/nvx/subspace-relay
   - remote: buf.build/protocolbuffers/dart
     out: dart/lib/src
-    include_wkt: true
     include_imports: true
