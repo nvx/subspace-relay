@@ -115,7 +115,7 @@ message Reconnect {
   reserved 1;
   // uid may not be supported by all card emulators
   bytes uid = 2;
-  // ats may not be supported by all card emulators
+  // ats may not be supported by all card emulators and should include the Tl length byte, but not the CRC16
   bytes ats = 3;
   // some card emulator relays may need an explicit list of AIDs to register (eg Mobile HCE) or they will not be visible
   // if the relay does not have this requirement it will be ignored
@@ -147,6 +147,7 @@ message RelayInfo {
   bytes uid = 10;
   bytes atqa = 11;
   bytes sak = 12;
+  // ats should include the Tl length byte, but not the CRC16
   bytes ats = 13;
 }
 

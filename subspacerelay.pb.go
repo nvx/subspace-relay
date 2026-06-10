@@ -564,7 +564,7 @@ type Reconnect struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// uid may not be supported by all card emulators
 	Uid []byte `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
-	// ats may not be supported by all card emulators
+	// ats may not be supported by all card emulators and should include the Tl length byte, but not the CRC16
 	Ats []byte `protobuf:"bytes,3,opt,name=ats,proto3" json:"ats,omitempty"`
 	// some card emulator relays may need an explicit list of AIDs to register (eg Mobile HCE) or they will not be visible
 	// if the relay does not have this requirement it will be ignored
@@ -661,9 +661,10 @@ type RelayInfo struct {
 	// user agent is an optional name/version of the relay application
 	UserAgent string `protobuf:"bytes,9,opt,name=user_agent,json=userAgent,proto3" json:"user_agent,omitempty"`
 	// Optional parameters for NFC cards. May not always be populated, eg PCSC readers may require querying via pseudo APDUs
-	Uid           []byte `protobuf:"bytes,10,opt,name=uid,proto3" json:"uid,omitempty"`
-	Atqa          []byte `protobuf:"bytes,11,opt,name=atqa,proto3" json:"atqa,omitempty"`
-	Sak           []byte `protobuf:"bytes,12,opt,name=sak,proto3" json:"sak,omitempty"`
+	Uid  []byte `protobuf:"bytes,10,opt,name=uid,proto3" json:"uid,omitempty"`
+	Atqa []byte `protobuf:"bytes,11,opt,name=atqa,proto3" json:"atqa,omitempty"`
+	Sak  []byte `protobuf:"bytes,12,opt,name=sak,proto3" json:"sak,omitempty"`
+	// ats should include the Tl length byte, but not the CRC16
 	Ats           []byte `protobuf:"bytes,13,opt,name=ats,proto3" json:"ats,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

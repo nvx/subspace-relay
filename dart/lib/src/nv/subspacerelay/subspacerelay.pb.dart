@@ -585,7 +585,7 @@ class Reconnect extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   void clearUid() => $_clearField(2);
 
-  /// ats may not be supported by all card emulators
+  /// ats may not be supported by all card emulators and should include the Tl length byte, but not the CRC16
   @$pb.TagNumber(3)
   $core.List<$core.int> get ats => $_getN(1);
   @$pb.TagNumber(3)
@@ -817,6 +817,7 @@ class RelayInfo extends $pb.GeneratedMessage {
   @$pb.TagNumber(12)
   void clearSak() => $_clearField(12);
 
+  /// ats should include the Tl length byte, but not the CRC16
   @$pb.TagNumber(13)
   $core.List<$core.int> get ats => $_getN(12);
   @$pb.TagNumber(13)
