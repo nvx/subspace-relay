@@ -83,7 +83,7 @@ const Message$json = {
       '3': 2,
       '4': 1,
       '5': 11,
-      '6': '.google.protobuf.Empty',
+      '6': '.nv.subspacerelay.RequestRelayInfo',
       '9': 0,
       '10': 'requestRelayInfo'
     },
@@ -119,7 +119,7 @@ const Message$json = {
       '3': 6,
       '4': 1,
       '5': 11,
-      '6': '.google.protobuf.Empty',
+      '6': '.nv.subspacerelay.Disconnect',
       '9': 0,
       '10': 'disconnect'
     },
@@ -160,18 +160,18 @@ const Message$json = {
 final $typed_data.Uint8List messageDescriptor = $convert.base64Decode(
     'CgdNZXNzYWdlEjUKB3BheWxvYWQYASABKAsyGS5udi5zdWJzcGFjZXJlbGF5LlBheWxvYWRIAF'
     'IHcGF5bG9hZBJUChJlbXVsYXRpb25fc2hvcnRjdXQYByABKAsyIy5udi5zdWJzcGFjZXJlbGF5'
-    'LkVtdWxhdGlvblNob3J0Y3V0SABSEWVtdWxhdGlvblNob3J0Y3V0EkYKEnJlcXVlc3RfcmVsYX'
-    'lfaW5mbxgCIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUgAUhByZXF1ZXN0UmVsYXlJbmZv'
-    'EjwKCnJlbGF5X2luZm8YAyABKAsyGy5udi5zdWJzcGFjZXJlbGF5LlJlbGF5SW5mb0gAUglyZW'
-    'xheUluZm8SKQoDbG9nGAQgASgLMhUubnYuc3Vic3BhY2VyZWxheS5Mb2dIAFIDbG9nEjsKCXJl'
-    'Y29ubmVjdBgFIAEoCzIbLm52LnN1YnNwYWNlcmVsYXkuUmVjb25uZWN0SABSCXJlY29ubmVjdB'
-    'I4CgpkaXNjb25uZWN0GAYgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SABSCmRpc2Nvbm5l'
-    'Y3QSYQoXcmVxdWVzdF9yZWxheV9kaXNjb3ZlcnkYCCABKAsyJy5udi5zdWJzcGFjZXJlbGF5Ll'
-    'JlcXVlc3RSZWxheURpc2NvdmVyeUgAUhVyZXF1ZXN0UmVsYXlEaXNjb3ZlcnkSXgoZcmVsYXlf'
-    'ZGlzY292ZXJ5X3BsYWludGV4dBgJIAEoCzIgLm52LnN1YnNwYWNlcmVsYXkuUmVsYXlEaXNjb3'
-    'ZlcnlIAFIXcmVsYXlEaXNjb3ZlcnlQbGFpbnRleHQSZwoZcmVsYXlfZGlzY292ZXJ5X2VuY3J5'
-    'cHRlZBgKIAEoCzIpLm52LnN1YnNwYWNlcmVsYXkuUmVsYXlEaXNjb3ZlcnlFbmNyeXB0ZWRIAF'
-    'IXcmVsYXlEaXNjb3ZlcnlFbmNyeXB0ZWRCCQoHbWVzc2FnZQ==');
+    'LkVtdWxhdGlvblNob3J0Y3V0SABSEWVtdWxhdGlvblNob3J0Y3V0ElIKEnJlcXVlc3RfcmVsYX'
+    'lfaW5mbxgCIAEoCzIiLm52LnN1YnNwYWNlcmVsYXkuUmVxdWVzdFJlbGF5SW5mb0gAUhByZXF1'
+    'ZXN0UmVsYXlJbmZvEjwKCnJlbGF5X2luZm8YAyABKAsyGy5udi5zdWJzcGFjZXJlbGF5LlJlbG'
+    'F5SW5mb0gAUglyZWxheUluZm8SKQoDbG9nGAQgASgLMhUubnYuc3Vic3BhY2VyZWxheS5Mb2dI'
+    'AFIDbG9nEjsKCXJlY29ubmVjdBgFIAEoCzIbLm52LnN1YnNwYWNlcmVsYXkuUmVjb25uZWN0SA'
+    'BSCXJlY29ubmVjdBI+CgpkaXNjb25uZWN0GAYgASgLMhwubnYuc3Vic3BhY2VyZWxheS5EaXNj'
+    'b25uZWN0SABSCmRpc2Nvbm5lY3QSYQoXcmVxdWVzdF9yZWxheV9kaXNjb3ZlcnkYCCABKAsyJy'
+    '5udi5zdWJzcGFjZXJlbGF5LlJlcXVlc3RSZWxheURpc2NvdmVyeUgAUhVyZXF1ZXN0UmVsYXlE'
+    'aXNjb3ZlcnkSXgoZcmVsYXlfZGlzY292ZXJ5X3BsYWludGV4dBgJIAEoCzIgLm52LnN1YnNwYW'
+    'NlcmVsYXkuUmVsYXlEaXNjb3ZlcnlIAFIXcmVsYXlEaXNjb3ZlcnlQbGFpbnRleHQSZwoZcmVs'
+    'YXlfZGlzY292ZXJ5X2VuY3J5cHRlZBgKIAEoCzIpLm52LnN1YnNwYWNlcmVsYXkuUmVsYXlEaX'
+    'Njb3ZlcnlFbmNyeXB0ZWRIAFIXcmVsYXlEaXNjb3ZlcnlFbmNyeXB0ZWRCCQoHbWVzc2FnZQ==');
 
 @$core.Deprecated('Use payloadDescriptor instead')
 const Payload$json = {
@@ -421,3 +421,24 @@ const Log$json = {
 /// Descriptor for `Log`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List logDescriptor =
     $convert.base64Decode('CgNMb2cSGAoHbWVzc2FnZRgBIAEoCVIHbWVzc2FnZQ==');
+
+@$core.Deprecated('Use requestRelayInfoDescriptor instead')
+const RequestRelayInfo$json = {
+  '1': 'RequestRelayInfo',
+};
+
+/// Descriptor for `RequestRelayInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List requestRelayInfoDescriptor =
+    $convert.base64Decode('ChBSZXF1ZXN0UmVsYXlJbmZv');
+
+@$core.Deprecated('Use disconnectDescriptor instead')
+const Disconnect$json = {
+  '1': 'Disconnect',
+  '2': [
+    {'1': 'temporary', '3': 1, '4': 1, '5': 8, '10': 'temporary'},
+  ],
+};
+
+/// Descriptor for `Disconnect`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List disconnectDescriptor = $convert
+    .base64Decode('CgpEaXNjb25uZWN0EhwKCXRlbXBvcmFyeRgBIAEoCFIJdGVtcG9yYXJ5');

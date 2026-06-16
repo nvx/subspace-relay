@@ -9,7 +9,6 @@ package subspacerelaypb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -225,7 +224,7 @@ func (x *Message) GetEmulationShortcut() *EmulationShortcut {
 	return nil
 }
 
-func (x *Message) GetRequestRelayInfo() *emptypb.Empty {
+func (x *Message) GetRequestRelayInfo() *RequestRelayInfo {
 	if x != nil {
 		if x, ok := x.Message.(*Message_RequestRelayInfo); ok {
 			return x.RequestRelayInfo
@@ -261,7 +260,7 @@ func (x *Message) GetReconnect() *Reconnect {
 	return nil
 }
 
-func (x *Message) GetDisconnect() *emptypb.Empty {
+func (x *Message) GetDisconnect() *Disconnect {
 	if x != nil {
 		if x, ok := x.Message.(*Message_Disconnect); ok {
 			return x.Disconnect
@@ -321,7 +320,7 @@ type Message_EmulationShortcut struct {
 }
 
 type Message_RequestRelayInfo struct {
-	RequestRelayInfo *emptypb.Empty `protobuf:"bytes,2,opt,name=request_relay_info,json=requestRelayInfo,proto3,oneof"`
+	RequestRelayInfo *RequestRelayInfo `protobuf:"bytes,2,opt,name=request_relay_info,json=requestRelayInfo,proto3,oneof"`
 }
 
 type Message_RelayInfo struct {
@@ -340,7 +339,7 @@ type Message_Reconnect struct {
 }
 
 type Message_Disconnect struct {
-	Disconnect *emptypb.Empty `protobuf:"bytes,6,opt,name=disconnect,proto3,oneof"`
+	Disconnect *Disconnect `protobuf:"bytes,6,opt,name=disconnect,proto3,oneof"`
 }
 
 type Message_RequestRelayDiscovery struct {
@@ -1006,21 +1005,107 @@ func (x *Log) GetMessage() string {
 	return ""
 }
 
+type RequestRelayInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RequestRelayInfo) Reset() {
+	*x = RequestRelayInfo{}
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RequestRelayInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestRelayInfo) ProtoMessage() {}
+
+func (x *RequestRelayInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestRelayInfo.ProtoReflect.Descriptor instead.
+func (*RequestRelayInfo) Descriptor() ([]byte, []int) {
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{9}
+}
+
+// Disconnect when sent from a relay to a controller indicates that relay has stopped.
+// * When temporary is false this means that the relay has been shut down entirely.
+// * When temporary is true this means that a future Reconnect message may be handled.
+// When sent from the controller to a relay this means the relay should stop.
+// * When temporary is false this means the relay should shut down requiring manual intervention on the relay side to restart.
+// * When temporary is true this means the relay should disconnect the existing session but remain running such that a future Reconnect message may be handled.
+type Disconnect struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Temporary     bool                   `protobuf:"varint,1,opt,name=temporary,proto3" json:"temporary,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Disconnect) Reset() {
+	*x = Disconnect{}
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Disconnect) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Disconnect) ProtoMessage() {}
+
+func (x *Disconnect) ProtoReflect() protoreflect.Message {
+	mi := &file_nv_subspacerelay_subspacerelay_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Disconnect.ProtoReflect.Descriptor instead.
+func (*Disconnect) Descriptor() ([]byte, []int) {
+	return file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *Disconnect) GetTemporary() bool {
+	if x != nil {
+		return x.Temporary
+	}
+	return false
+}
+
 var File_nv_subspacerelay_subspacerelay_proto protoreflect.FileDescriptor
 
 const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\n" +
-	"$nv/subspacerelay/subspacerelay.proto\x12\x10nv.subspacerelay\x1a\x1bgoogle/protobuf/empty.proto\"\xf5\x05\n" +
+	"$nv/subspacerelay/subspacerelay.proto\x12\x10nv.subspacerelay\"\x87\x06\n" +
 	"\aMessage\x125\n" +
 	"\apayload\x18\x01 \x01(\v2\x19.nv.subspacerelay.PayloadH\x00R\apayload\x12T\n" +
-	"\x12emulation_shortcut\x18\a \x01(\v2#.nv.subspacerelay.EmulationShortcutH\x00R\x11emulationShortcut\x12F\n" +
-	"\x12request_relay_info\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x10requestRelayInfo\x12<\n" +
+	"\x12emulation_shortcut\x18\a \x01(\v2#.nv.subspacerelay.EmulationShortcutH\x00R\x11emulationShortcut\x12R\n" +
+	"\x12request_relay_info\x18\x02 \x01(\v2\".nv.subspacerelay.RequestRelayInfoH\x00R\x10requestRelayInfo\x12<\n" +
 	"\n" +
 	"relay_info\x18\x03 \x01(\v2\x1b.nv.subspacerelay.RelayInfoH\x00R\trelayInfo\x12)\n" +
 	"\x03log\x18\x04 \x01(\v2\x15.nv.subspacerelay.LogH\x00R\x03log\x12;\n" +
-	"\treconnect\x18\x05 \x01(\v2\x1b.nv.subspacerelay.ReconnectH\x00R\treconnect\x128\n" +
+	"\treconnect\x18\x05 \x01(\v2\x1b.nv.subspacerelay.ReconnectH\x00R\treconnect\x12>\n" +
 	"\n" +
-	"disconnect\x18\x06 \x01(\v2\x16.google.protobuf.EmptyH\x00R\n" +
+	"disconnect\x18\x06 \x01(\v2\x1c.nv.subspacerelay.DisconnectH\x00R\n" +
 	"disconnect\x12a\n" +
 	"\x17request_relay_discovery\x18\b \x01(\v2'.nv.subspacerelay.RequestRelayDiscoveryH\x00R\x15requestRelayDiscovery\x12^\n" +
 	"\x19relay_discovery_plaintext\x18\t \x01(\v2 .nv.subspacerelay.RelayDiscoveryH\x00R\x17relayDiscoveryPlaintext\x12g\n" +
@@ -1081,7 +1166,11 @@ const file_nv_subspacerelay_subspacerelay_proto_rawDesc = "" +
 	"\x10relay_public_key\x18\x02 \x01(\fR\x0erelayPublicKey\x12:\n" +
 	"\x19encrypted_relay_discovery\x18\x03 \x01(\fR\x17encryptedRelayDiscovery\"\x1f\n" +
 	"\x03Log\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage*\xc2\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\x12\n" +
+	"\x10RequestRelayInfo\"*\n" +
+	"\n" +
+	"Disconnect\x12\x1c\n" +
+	"\ttemporary\x18\x01 \x01(\bR\ttemporary*\xc2\x01\n" +
 	"\vPayloadType\x12\x1c\n" +
 	"\x18PAYLOAD_TYPE_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14PAYLOAD_TYPE_ARTEMIS\x10\x01\x12\x1b\n" +
@@ -1111,7 +1200,7 @@ func file_nv_subspacerelay_subspacerelay_proto_rawDescGZIP() []byte {
 }
 
 var file_nv_subspacerelay_subspacerelay_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_nv_subspacerelay_subspacerelay_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_nv_subspacerelay_subspacerelay_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_nv_subspacerelay_subspacerelay_proto_goTypes = []any{
 	(PayloadType)(0),                // 0: nv.subspacerelay.PayloadType
 	(ConnectionType)(0),             // 1: nv.subspacerelay.ConnectionType
@@ -1124,16 +1213,17 @@ var file_nv_subspacerelay_subspacerelay_proto_goTypes = []any{
 	(*RelayDiscovery)(nil),          // 8: nv.subspacerelay.RelayDiscovery
 	(*RelayDiscoveryEncrypted)(nil), // 9: nv.subspacerelay.RelayDiscoveryEncrypted
 	(*Log)(nil),                     // 10: nv.subspacerelay.Log
-	(*emptypb.Empty)(nil),           // 11: google.protobuf.Empty
+	(*RequestRelayInfo)(nil),        // 11: nv.subspacerelay.RequestRelayInfo
+	(*Disconnect)(nil),              // 12: nv.subspacerelay.Disconnect
 }
 var file_nv_subspacerelay_subspacerelay_proto_depIdxs = []int32{
 	3,  // 0: nv.subspacerelay.Message.payload:type_name -> nv.subspacerelay.Payload
 	4,  // 1: nv.subspacerelay.Message.emulation_shortcut:type_name -> nv.subspacerelay.EmulationShortcut
-	11, // 2: nv.subspacerelay.Message.request_relay_info:type_name -> google.protobuf.Empty
+	11, // 2: nv.subspacerelay.Message.request_relay_info:type_name -> nv.subspacerelay.RequestRelayInfo
 	6,  // 3: nv.subspacerelay.Message.relay_info:type_name -> nv.subspacerelay.RelayInfo
 	10, // 4: nv.subspacerelay.Message.log:type_name -> nv.subspacerelay.Log
 	5,  // 5: nv.subspacerelay.Message.reconnect:type_name -> nv.subspacerelay.Reconnect
-	11, // 6: nv.subspacerelay.Message.disconnect:type_name -> google.protobuf.Empty
+	12, // 6: nv.subspacerelay.Message.disconnect:type_name -> nv.subspacerelay.Disconnect
 	7,  // 7: nv.subspacerelay.Message.request_relay_discovery:type_name -> nv.subspacerelay.RequestRelayDiscovery
 	8,  // 8: nv.subspacerelay.Message.relay_discovery_plaintext:type_name -> nv.subspacerelay.RelayDiscovery
 	9,  // 9: nv.subspacerelay.Message.relay_discovery_encrypted:type_name -> nv.subspacerelay.RelayDiscoveryEncrypted
@@ -1175,7 +1265,7 @@ func file_nv_subspacerelay_subspacerelay_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_nv_subspacerelay_subspacerelay_proto_rawDesc), len(file_nv_subspacerelay_subspacerelay_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   9,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -1,3 +1,8 @@
+## v1.0.11
+
+* Tweak RequestRelayInfo and Disconnect messages to not be the Empty well known type
+* Add temporary bool to Disconnect message
+
 ## v1.0.10
 
 * Update codegen, now uses well known types from protobuf package

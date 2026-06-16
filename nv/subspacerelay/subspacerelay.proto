@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package nv.subspacerelay;
 
-import "google/protobuf/empty.proto";
-
 option go_package = "github.com/nvx/subspace-relay;subspacerelaypb";
 
 message Message {
@@ -23,7 +21,7 @@ message Message {
     // shortcuts are flushed when disconnect or reconnect messages are received by a relay unless persist_reconnect is true
     EmulationShortcut emulation_shortcut = 7;
 
-    google.protobuf.Empty request_relay_info = 2;
+    RequestRelayInfo request_relay_info = 2;
     RelayInfo relay_info = 3;
 
     Log log = 4;
@@ -32,7 +30,8 @@ message Message {
     // but some remote-driven interactions (eg emulating a card) are still initiated from the local side (eg BLE) or
     // require setup (cardhopper emulation)
     Reconnect reconnect = 5;
-    google.protobuf.Empty disconnect = 6;
+
+    Disconnect disconnect = 6;
 
     // Controllers can broadcast a request_relay_discovery message and all connected relays with discovery enabled will
     // respond with a relay_discovery response.
@@ -176,4 +175,16 @@ message RelayDiscoveryEncrypted {
 
 message Log {
   string message = 1;
+}
+
+message RequestRelayInfo {}
+
+// Disconnect when sent from a relay to a controller indicates that relay has stopped.
+// * When temporary is false this means that the relay has been shut down entirely.
+// * When temporary is true this means that a future Reconnect message may be handled.
+// When sent from the controller to a relay this means the relay should stop.
+// * When temporary is false this means the relay should shut down requiring manual intervention on the relay side to restart.
+// * When temporary is true this means the relay should disconnect the existing session but remain running such that a future Reconnect message may be handled.
+message Disconnect {
+  bool temporary = 1;
 }

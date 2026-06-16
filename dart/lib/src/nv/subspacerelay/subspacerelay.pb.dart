@@ -13,7 +13,6 @@
 import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
-import 'package:protobuf/well_known_types/google/protobuf/empty.pb.dart' as $0;
 
 import 'subspacerelay.pbenum.dart';
 
@@ -38,11 +37,11 @@ enum Message_Message {
 class Message extends $pb.GeneratedMessage {
   factory Message({
     Payload? payload,
-    $0.Empty? requestRelayInfo,
+    RequestRelayInfo? requestRelayInfo,
     RelayInfo? relayInfo,
     Log? log,
     Reconnect? reconnect,
-    $0.Empty? disconnect,
+    Disconnect? disconnect,
     EmulationShortcut? emulationShortcut,
     RequestRelayDiscovery? requestRelayDiscovery,
     RelayDiscovery? relayDiscoveryPlaintext,
@@ -95,15 +94,15 @@ class Message extends $pb.GeneratedMessage {
     ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     ..aOM<Payload>(1, _omitFieldNames ? '' : 'payload',
         subBuilder: Payload.create)
-    ..aOM<$0.Empty>(2, _omitFieldNames ? '' : 'requestRelayInfo',
-        subBuilder: $0.Empty.create)
+    ..aOM<RequestRelayInfo>(2, _omitFieldNames ? '' : 'requestRelayInfo',
+        subBuilder: RequestRelayInfo.create)
     ..aOM<RelayInfo>(3, _omitFieldNames ? '' : 'relayInfo',
         subBuilder: RelayInfo.create)
     ..aOM<Log>(4, _omitFieldNames ? '' : 'log', subBuilder: Log.create)
     ..aOM<Reconnect>(5, _omitFieldNames ? '' : 'reconnect',
         subBuilder: Reconnect.create)
-    ..aOM<$0.Empty>(6, _omitFieldNames ? '' : 'disconnect',
-        subBuilder: $0.Empty.create)
+    ..aOM<Disconnect>(6, _omitFieldNames ? '' : 'disconnect',
+        subBuilder: Disconnect.create)
     ..aOM<EmulationShortcut>(7, _omitFieldNames ? '' : 'emulationShortcut',
         subBuilder: EmulationShortcut.create)
     ..aOM<RequestRelayDiscovery>(
@@ -170,15 +169,15 @@ class Message extends $pb.GeneratedMessage {
   Payload ensurePayload() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $0.Empty get requestRelayInfo => $_getN(1);
+  RequestRelayInfo get requestRelayInfo => $_getN(1);
   @$pb.TagNumber(2)
-  set requestRelayInfo($0.Empty value) => $_setField(2, value);
+  set requestRelayInfo(RequestRelayInfo value) => $_setField(2, value);
   @$pb.TagNumber(2)
   $core.bool hasRequestRelayInfo() => $_has(1);
   @$pb.TagNumber(2)
   void clearRequestRelayInfo() => $_clearField(2);
   @$pb.TagNumber(2)
-  $0.Empty ensureRequestRelayInfo() => $_ensure(1);
+  RequestRelayInfo ensureRequestRelayInfo() => $_ensure(1);
 
   @$pb.TagNumber(3)
   RelayInfo get relayInfo => $_getN(2);
@@ -217,15 +216,15 @@ class Message extends $pb.GeneratedMessage {
   Reconnect ensureReconnect() => $_ensure(4);
 
   @$pb.TagNumber(6)
-  $0.Empty get disconnect => $_getN(5);
+  Disconnect get disconnect => $_getN(5);
   @$pb.TagNumber(6)
-  set disconnect($0.Empty value) => $_setField(6, value);
+  set disconnect(Disconnect value) => $_setField(6, value);
   @$pb.TagNumber(6)
   $core.bool hasDisconnect() => $_has(5);
   @$pb.TagNumber(6)
   void clearDisconnect() => $_clearField(6);
   @$pb.TagNumber(6)
-  $0.Empty ensureDisconnect() => $_ensure(5);
+  Disconnect ensureDisconnect() => $_ensure(5);
 
   /// Load an emulation shortcut config into a supported card emulation relay
   /// Shortcuts preempt a cAPDU from the reader with a given rAPDU response to reduce round trip delays
@@ -1111,6 +1110,105 @@ class Log extends $pb.GeneratedMessage {
   $core.bool hasMessage() => $_has(0);
   @$pb.TagNumber(1)
   void clearMessage() => $_clearField(1);
+}
+
+class RequestRelayInfo extends $pb.GeneratedMessage {
+  factory RequestRelayInfo() => create();
+
+  RequestRelayInfo._();
+
+  factory RequestRelayInfo.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory RequestRelayInfo.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'RequestRelayInfo',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
+      createEmptyInstance: create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RequestRelayInfo clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  RequestRelayInfo copyWith(void Function(RequestRelayInfo) updates) =>
+      super.copyWith((message) => updates(message as RequestRelayInfo))
+          as RequestRelayInfo;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static RequestRelayInfo create() => RequestRelayInfo._();
+  @$core.override
+  RequestRelayInfo createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static RequestRelayInfo getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<RequestRelayInfo>(create);
+  static RequestRelayInfo? _defaultInstance;
+}
+
+/// Disconnect when sent from a relay to a controller indicates that relay has stopped.
+/// * When temporary is false this means that the relay has been shut down entirely.
+/// * When temporary is true this means that a future Reconnect message may be handled.
+/// When sent from the controller to a relay this means the relay should stop.
+/// * When temporary is false this means the relay should shut down requiring manual intervention on the relay side to restart.
+/// * When temporary is true this means the relay should disconnect the existing session but remain running such that a future Reconnect message may be handled.
+class Disconnect extends $pb.GeneratedMessage {
+  factory Disconnect({
+    $core.bool? temporary,
+  }) {
+    final result = create();
+    if (temporary != null) result.temporary = temporary;
+    return result;
+  }
+
+  Disconnect._();
+
+  factory Disconnect.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory Disconnect.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'Disconnect',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'temporary')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Disconnect clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Disconnect copyWith(void Function(Disconnect) updates) =>
+      super.copyWith((message) => updates(message as Disconnect)) as Disconnect;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Disconnect create() => Disconnect._();
+  @$core.override
+  Disconnect createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static Disconnect getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<Disconnect>(create);
+  static Disconnect? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get temporary => $_getBF(0);
+  @$pb.TagNumber(1)
+  set temporary($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasTemporary() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTemporary() => $_clearField(1);
 }
 
 const $core.bool _omitFieldNames =
