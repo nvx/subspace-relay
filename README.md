@@ -36,13 +36,17 @@ are unable to decrypt the communication.
 There is a Go library [go-subspace-relay](https://github.com/nvx/go-subspace-relay) that leverages this protobuf schema to exchange messages over MQTT
 as well as some example applications that make use of the library.
 
+# Relays
 * [subspace-relay-pcsc](https://github.com/nvx/subspace-relay-pcsc) exposes a PCSC-connected reader
+* [subspace-relay-proxmark](https://github.com/nvx/subspace-relay-proxmark) exposes a Proxmark to act as a PCSC-like reader
 * [subspace-relay-acr1555ble](https://github.com/nvx/subspace-relay-acr1555ble) exposes an ACS ACR1555 reader
 connected via BLE using the [go-acr1555ble](https://github.com/nvx/go-acr1555ble) library for connectivity
 * [subspace-relay-cardhopper-emulate](https://github.com/nvx/subspace-relay-cardhopper-emulate) exposes a Proxmark3
 running the `hf_cardhopper` standalone mode as a card emulator
+
+# Controllers
 * [subspace-relay-pcsc-controller-demo](https://github.com/nvx/subspace-relay-pcsc-controller-demo) a demo controller
-that can talk to eg `subspace-relay-pcsc` to exchange APDUs
+that can talk to eg `subspace-relay-pcsc`, `subspace-relay-proxmark` or the mobile app to exchange APDUs
 
 ## Android App
 <a href="https://play.google.com/store/apps/details?id=io.nv.subspacerelay.mobile" alt="Get it on Google Play"><img src="https://raw.githubusercontent.com/pioug/google-play-badges/refs/heads/main/svg/en.svg" height="70"></a>
