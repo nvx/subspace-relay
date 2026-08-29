@@ -25,6 +25,10 @@ const PayloadType$json = {
     {'1': 'PAYLOAD_TYPE_PCSC_READER', '2': 3},
     {'1': 'PAYLOAD_TYPE_PCSC_READER_CONTROL', '2': 5},
     {'1': 'PAYLOAD_TYPE_PCSC_CARD', '2': 4},
+    {'1': 'PAYLOAD_TYPE_OSDP_PD', '2': 6},
+    {'1': 'PAYLOAD_TYPE_OSDP_DEVICE', '2': 7},
+    {'1': 'PAYLOAD_TYPE_PROXMARK_DEVICE', '2': 8},
+    {'1': 'PAYLOAD_TYPE_PROXMARK_CLIENT', '2': 9},
   ],
 };
 
@@ -33,7 +37,9 @@ final $typed_data.Uint8List payloadTypeDescriptor = $convert.base64Decode(
     'CgtQYXlsb2FkVHlwZRIcChhQQVlMT0FEX1RZUEVfVU5TUEVDSUZJRUQQABIYChRQQVlMT0FEX1'
     'RZUEVfQVJURU1JUxABEhsKF1BBWUxPQURfVFlQRV9DQVJESE9QUEVSEAISHAoYUEFZTE9BRF9U'
     'WVBFX1BDU0NfUkVBREVSEAMSJAogUEFZTE9BRF9UWVBFX1BDU0NfUkVBREVSX0NPTlRST0wQBR'
-    'IaChZQQVlMT0FEX1RZUEVfUENTQ19DQVJEEAQ=');
+    'IaChZQQVlMT0FEX1RZUEVfUENTQ19DQVJEEAQSGAoUUEFZTE9BRF9UWVBFX09TRFBfUEQQBhIc'
+    'ChhQQVlMT0FEX1RZUEVfT1NEUF9ERVZJQ0UQBxIgChxQQVlMT0FEX1RZUEVfUFJPWE1BUktfRE'
+    'VWSUNFEAgSIAocUEFZTE9BRF9UWVBFX1BST1hNQVJLX0NMSUVOVBAJ');
 
 @$core.Deprecated('Use connectionTypeDescriptor instead')
 const ConnectionType$json = {
@@ -55,6 +61,28 @@ final $typed_data.Uint8List connectionTypeDescriptor = $convert.base64Decode(
     '5ORUNUSU9OX1RZUEVfUENTQxABEh8KG0NPTk5FQ1RJT05fVFlQRV9QQ1NDX0RJUkVDVBAGEhgK'
     'FENPTk5FQ1RJT05fVFlQRV9VQVJUEAISGAoUQ09OTkVDVElPTl9UWVBFX09TRFAQAxIXChNDT0'
     '5ORUNUSU9OX1RZUEVfTkZDEAQSFwoTQ09OTkVDVElPTl9UWVBFX0JMRRAF');
+
+@$core.Deprecated('Use protocolDescriptor instead')
+const Protocol$json = {
+  '1': 'Protocol',
+  '2': [
+    {'1': 'PROTOCOL_UNSPECIFIED', '2': 0},
+    {'1': 'PROTOCOL_14443A_4', '2': 1},
+    {'1': 'PROTOCOL_14443B_4', '2': 2},
+    {'1': 'PROTOCOL_14443A_3', '2': 3},
+    {'1': 'PROTOCOL_FELICA', '2': 4},
+    {'1': 'PROTOCOL_15693', '2': 5},
+    {'1': 'PROTOCOL_7816_T0', '2': 6},
+    {'1': 'PROTOCOL_7816_T1', '2': 7},
+  ],
+};
+
+/// Descriptor for `Protocol`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List protocolDescriptor = $convert.base64Decode(
+    'CghQcm90b2NvbBIYChRQUk9UT0NPTF9VTlNQRUNJRklFRBAAEhUKEVBST1RPQ09MXzE0NDQzQV'
+    '80EAESFQoRUFJPVE9DT0xfMTQ0NDNCXzQQAhIVChFQUk9UT0NPTF8xNDQ0M0FfMxADEhMKD1BS'
+    'T1RPQ09MX0ZFTElDQRAEEhIKDlBST1RPQ09MXzE1NjkzEAUSFAoQUFJPVE9DT0xfNzgxNl9UMB'
+    'AGEhQKEFBST1RPQ09MXzc4MTZfVDEQBw==');
 
 @$core.Deprecated('Use messageDescriptor instead')
 const Message$json = {
@@ -173,6 +201,42 @@ final $typed_data.Uint8List messageDescriptor = $convert.base64Decode(
     'YXlfZGlzY292ZXJ5X2VuY3J5cHRlZBgKIAEoCzIpLm52LnN1YnNwYWNlcmVsYXkuUmVsYXlEaX'
     'Njb3ZlcnlFbmNyeXB0ZWRIAFIXcmVsYXlEaXNjb3ZlcnlFbmNyeXB0ZWRCCQoHbWVzc2FnZQ==');
 
+@$core.Deprecated('Use frameDescriptor instead')
+const Frame$json = {
+  '1': 'Frame',
+  '2': [
+    {
+      '1': 'plaintext_message',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.nv.subspacerelay.Message',
+      '9': 0,
+      '10': 'plaintextMessage'
+    },
+    {
+      '1': 'encrypted_message',
+      '3': 2,
+      '4': 1,
+      '5': 12,
+      '9': 0,
+      '10': 'encryptedMessage'
+    },
+    {'1': 'endpoint', '3': 3, '4': 1, '5': 9, '10': 'endpoint'},
+    {'1': 'correlation_data', '3': 4, '4': 1, '5': 12, '10': 'correlationData'},
+  ],
+  '8': [
+    {'1': 'message'},
+  ],
+};
+
+/// Descriptor for `Frame`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List frameDescriptor = $convert.base64Decode(
+    'CgVGcmFtZRJIChFwbGFpbnRleHRfbWVzc2FnZRgBIAEoCzIZLm52LnN1YnNwYWNlcmVsYXkuTW'
+    'Vzc2FnZUgAUhBwbGFpbnRleHRNZXNzYWdlEi0KEWVuY3J5cHRlZF9tZXNzYWdlGAIgASgMSABS'
+    'EGVuY3J5cHRlZE1lc3NhZ2USGgoIZW5kcG9pbnQYAyABKAlSCGVuZHBvaW50EikKEGNvcnJlbG'
+    'F0aW9uX2RhdGEYBCABKAxSD2NvcnJlbGF0aW9uRGF0YUIJCgdtZXNzYWdl');
+
 @$core.Deprecated('Use payloadDescriptor instead')
 const Payload$json = {
   '1': 'Payload',
@@ -196,6 +260,12 @@ const Payload$json = {
       '10': 'control',
       '17': true
     },
+    {'1': 'num_bits', '3': 5, '4': 1, '5': 13, '10': 'numBits'},
+    {'1': 'explicit_parity', '3': 6, '4': 1, '5': 8, '10': 'explicitParity'},
+    {'1': 'explicit_crc', '3': 7, '4': 1, '5': 8, '10': 'explicitCrc'},
+    {'1': 'framing_error', '3': 8, '4': 1, '5': 8, '10': 'framingError'},
+    {'1': 'parity_error', '3': 9, '4': 1, '5': 8, '10': 'parityError'},
+    {'1': 'crc_error', '3': 10, '4': 1, '5': 8, '10': 'crcError'},
   ],
   '8': [
     {'1': '_control'},
@@ -206,8 +276,11 @@ const Payload$json = {
 final $typed_data.Uint8List payloadDescriptor = $convert.base64Decode(
     'CgdQYXlsb2FkEhgKB3BheWxvYWQYASABKAxSB3BheWxvYWQSQAoMcGF5bG9hZF90eXBlGAIgAS'
     'gOMh0ubnYuc3Vic3BhY2VyZWxheS5QYXlsb2FkVHlwZVILcGF5bG9hZFR5cGUSGgoIc2VxdWVu'
-    'Y2UYAyABKA1SCHNlcXVlbmNlEh0KB2NvbnRyb2wYBCABKA1IAFIHY29udHJvbIgBAUIKCghfY2'
-    '9udHJvbA==');
+    'Y2UYAyABKA1SCHNlcXVlbmNlEh0KB2NvbnRyb2wYBCABKA1IAFIHY29udHJvbIgBARIZCghudW'
+    '1fYml0cxgFIAEoDVIHbnVtQml0cxInCg9leHBsaWNpdF9wYXJpdHkYBiABKAhSDmV4cGxpY2l0'
+    'UGFyaXR5EiEKDGV4cGxpY2l0X2NyYxgHIAEoCFILZXhwbGljaXRDcmMSIwoNZnJhbWluZ19lcn'
+    'JvchgIIAEoCFIMZnJhbWluZ0Vycm9yEiEKDHBhcml0eV9lcnJvchgJIAEoCFILcGFyaXR5RXJy'
+    'b3ISGwoJY3JjX2Vycm9yGAogASgIUghjcmNFcnJvckIKCghfY29udHJvbA==');
 
 @$core.Deprecated('Use emulationShortcutDescriptor instead')
 const EmulationShortcut$json = {
@@ -267,6 +340,7 @@ const Reconnect$json = {
       '5': 8,
       '10': 'forceFlushShortcuts'
     },
+    {'1': 'baud_rate', '3': 7, '4': 1, '5': 5, '10': 'baudRate'},
   ],
   '9': [
     {'1': 1, '2': 2},
@@ -278,7 +352,8 @@ final $typed_data.Uint8List reconnectDescriptor = $convert.base64Decode(
     'CglSZWNvbm5lY3QSEAoDdWlkGAIgASgMUgN1aWQSEAoDYXRzGAMgASgMUgNhdHMSGQoIYWlkX2'
     'xpc3QYBCADKAxSB2FpZExpc3QSQQoJc2hvcnRjdXRzGAUgAygLMiMubnYuc3Vic3BhY2VyZWxh'
     'eS5FbXVsYXRpb25TaG9ydGN1dFIJc2hvcnRjdXRzEjIKFWZvcmNlX2ZsdXNoX3Nob3J0Y3V0cx'
-    'gGIAEoCFITZm9yY2VGbHVzaFNob3J0Y3V0c0oECAEQAg==');
+    'gGIAEoCFITZm9yY2VGbHVzaFNob3J0Y3V0cxIbCgliYXVkX3JhdGUYByABKAVSCGJhdWRSYXRl'
+    'SgQIARAC');
 
 @$core.Deprecated('Use relayInfoDescriptor instead')
 const RelayInfo$json = {
@@ -317,6 +392,15 @@ const RelayInfo$json = {
     {'1': 'atqa', '3': 11, '4': 1, '5': 12, '10': 'atqa'},
     {'1': 'sak', '3': 12, '4': 1, '5': 12, '10': 'sak'},
     {'1': 'ats', '3': 13, '4': 1, '5': 12, '10': 'ats'},
+    {'1': 'baud_rate', '3': 14, '4': 1, '5': 5, '10': 'baudRate'},
+    {
+      '1': 'protocol',
+      '3': 15,
+      '4': 1,
+      '5': 14,
+      '6': '.nv.subspacerelay.Protocol',
+      '10': 'protocol'
+    },
   ],
 };
 
@@ -330,7 +414,9 @@ final $typed_data.Uint8List relayInfoDescriptor = $convert.base64Decode(
     'IEcnNzaRIrChFzdXBwb3J0c19zaG9ydGN1dBgHIAEoCFIQc3VwcG9ydHNTaG9ydGN1dBIqChFy'
     'ZXF1aXJlc19haWRfbGlzdBgIIAEoCFIPcmVxdWlyZXNBaWRMaXN0Eh0KCnVzZXJfYWdlbnQYCS'
     'ABKAlSCXVzZXJBZ2VudBIQCgN1aWQYCiABKAxSA3VpZBISCgRhdHFhGAsgASgMUgRhdHFhEhAK'
-    'A3NhaxgMIAEoDFIDc2FrEhAKA2F0cxgNIAEoDFIDYXRz');
+    'A3NhaxgMIAEoDFIDc2FrEhAKA2F0cxgNIAEoDFIDYXRzEhsKCWJhdWRfcmF0ZRgOIAEoBVIIYm'
+    'F1ZFJhdGUSNgoIcHJvdG9jb2wYDyABKA4yGi5udi5zdWJzcGFjZXJlbGF5LlByb3RvY29sUghw'
+    'cm90b2NvbA==');
 
 @$core.Deprecated('Use requestRelayDiscoveryDescriptor instead')
 const RequestRelayDiscovery$json = {

@@ -34,6 +34,9 @@ enum Message_Message {
   notSet
 }
 
+/// Message is the primary top level wrapper message that is exchanged between relays and controllers.
+/// Under MQTT Message is serialised and encrypted in to/from-relay topics, and plaintext in broadcast topics for discovery.
+/// Under simpler protocols that do not support topics and headers the Frame message should be used as an encapsulating layer.
 class Message extends $pb.GeneratedMessage {
   factory Message({
     Payload? payload,
@@ -294,18 +297,147 @@ class Message extends $pb.GeneratedMessage {
   RelayDiscoveryEncrypted ensureRelayDiscoveryEncrypted() => $_ensure(9);
 }
 
+enum Frame_Message { plaintextMessage, encryptedMessage, notSet }
+
+/// Frame is used to encapsulate Message (either plaintext or encrypted) across simple transports such as raw UARTs
+/// If note Frame is not used when using higher level transports such as MQTT as the functionality of that transport is used instead
+/// When sent over the wire a 16bit CRCA (as used in 14443A) over the serialised Frame bytes and appended
+/// The result should then be encapsulated with COBS (Consistent Overhead Byte Stuffing)
+class Frame extends $pb.GeneratedMessage {
+  factory Frame({
+    Message? plaintextMessage,
+    $core.List<$core.int>? encryptedMessage,
+    $core.String? endpoint,
+    $core.List<$core.int>? correlationData,
+  }) {
+    final result = create();
+    if (plaintextMessage != null) result.plaintextMessage = plaintextMessage;
+    if (encryptedMessage != null) result.encryptedMessage = encryptedMessage;
+    if (endpoint != null) result.endpoint = endpoint;
+    if (correlationData != null) result.correlationData = correlationData;
+    return result;
+  }
+
+  Frame._();
+
+  factory Frame.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory Frame.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static const $core.Map<$core.int, Frame_Message> _Frame_MessageByTag = {
+    1: Frame_Message.plaintextMessage,
+    2: Frame_Message.encryptedMessage,
+    0: Frame_Message.notSet
+  };
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'Frame',
+      package:
+          const $pb.PackageName(_omitMessageNames ? '' : 'nv.subspacerelay'),
+      createEmptyInstance: create)
+    ..oo(0, [1, 2])
+    ..aOM<Message>(1, _omitFieldNames ? '' : 'plaintextMessage',
+        subBuilder: Message.create)
+    ..a<$core.List<$core.int>>(
+        2, _omitFieldNames ? '' : 'encryptedMessage', $pb.PbFieldType.OY)
+    ..aOS(3, _omitFieldNames ? '' : 'endpoint')
+    ..a<$core.List<$core.int>>(
+        4, _omitFieldNames ? '' : 'correlationData', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Frame clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Frame copyWith(void Function(Frame) updates) =>
+      super.copyWith((message) => updates(message as Frame)) as Frame;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Frame create() => Frame._();
+  @$core.override
+  Frame createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static Frame getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Frame>(create);
+  static Frame? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  Frame_Message whichMessage() => _Frame_MessageByTag[$_whichOneof(0)]!;
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  void clearMessage() => $_clearField($_whichOneof(0));
+
+  /// If encryption is used, plaintext_message will only be used for discovery if enabled
+  @$pb.TagNumber(1)
+  Message get plaintextMessage => $_getN(0);
+  @$pb.TagNumber(1)
+  set plaintextMessage(Message value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasPlaintextMessage() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPlaintextMessage() => $_clearField(1);
+  @$pb.TagNumber(1)
+  Message ensurePlaintextMessage() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get encryptedMessage => $_getN(1);
+  @$pb.TagNumber(2)
+  set encryptedMessage($core.List<$core.int> value) => $_setBytes(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasEncryptedMessage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearEncryptedMessage() => $_clearField(2);
+
+  /// endpoint is optional, if supported should match the semantics of the MQTT client-id as used in to/from-relay topic names
+  @$pb.TagNumber(3)
+  $core.String get endpoint => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set endpoint($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasEndpoint() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearEndpoint() => $_clearField(3);
+
+  /// correlation_data is optional and analogous to the MQTT RPC correlation data for rpc style messaging
+  @$pb.TagNumber(4)
+  $core.List<$core.int> get correlationData => $_getN(3);
+  @$pb.TagNumber(4)
+  set correlationData($core.List<$core.int> value) => $_setBytes(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasCorrelationData() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearCorrelationData() => $_clearField(4);
+}
+
 class Payload extends $pb.GeneratedMessage {
   factory Payload({
     $core.List<$core.int>? payload,
     PayloadType? payloadType,
     $core.int? sequence,
     $core.int? control,
+    $core.int? numBits,
+    $core.bool? explicitParity,
+    $core.bool? explicitCrc,
+    $core.bool? framingError,
+    $core.bool? parityError,
+    $core.bool? crcError,
   }) {
     final result = create();
     if (payload != null) result.payload = payload;
     if (payloadType != null) result.payloadType = payloadType;
     if (sequence != null) result.sequence = sequence;
     if (control != null) result.control = control;
+    if (numBits != null) result.numBits = numBits;
+    if (explicitParity != null) result.explicitParity = explicitParity;
+    if (explicitCrc != null) result.explicitCrc = explicitCrc;
+    if (framingError != null) result.framingError = framingError;
+    if (parityError != null) result.parityError = parityError;
+    if (crcError != null) result.crcError = crcError;
     return result;
   }
 
@@ -329,6 +461,12 @@ class Payload extends $pb.GeneratedMessage {
         enumValues: PayloadType.values)
     ..aI(3, _omitFieldNames ? '' : 'sequence', fieldType: $pb.PbFieldType.OU3)
     ..aI(4, _omitFieldNames ? '' : 'control', fieldType: $pb.PbFieldType.OU3)
+    ..aI(5, _omitFieldNames ? '' : 'numBits', fieldType: $pb.PbFieldType.OU3)
+    ..aOB(6, _omitFieldNames ? '' : 'explicitParity')
+    ..aOB(7, _omitFieldNames ? '' : 'explicitCrc')
+    ..aOB(8, _omitFieldNames ? '' : 'framingError')
+    ..aOB(9, _omitFieldNames ? '' : 'parityError')
+    ..aOB(10, _omitFieldNames ? '' : 'crcError')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -376,7 +514,7 @@ class Payload extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   void clearSequence() => $_clearField(3);
 
-  /// control is used for PCSC control codes, only uint16 values are valid
+  /// control is used for PCSC control codes for PAYLOAD_TYPE_PCSC_READER_CONTROL payloads, only uint16 values are valid
   @$pb.TagNumber(4)
   $core.int get control => $_getIZ(3);
   @$pb.TagNumber(4)
@@ -385,6 +523,68 @@ class Payload extends $pb.GeneratedMessage {
   $core.bool hasControl() => $_has(3);
   @$pb.TagNumber(4)
   void clearControl() => $_clearField(4);
+
+  /// Number of valid bits in the last byte. 0 means all bits are valid.
+  @$pb.TagNumber(5)
+  $core.int get numBits => $_getIZ(4);
+  @$pb.TagNumber(5)
+  set numBits($core.int value) => $_setUnsignedInt32(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasNumBits() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearNumBits() => $_clearField(5);
+
+  /// When true for relevant protocols this flag indicates the payload contains explicit parity bits.
+  /// When false it means parity bits will be generated automatically / validated and stripped as required.
+  @$pb.TagNumber(6)
+  $core.bool get explicitParity => $_getBF(5);
+  @$pb.TagNumber(6)
+  set explicitParity($core.bool value) => $_setBool(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasExplicitParity() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearExplicitParity() => $_clearField(6);
+
+  /// When true for relevant protocols this flag indicates the payload contains an explicit CRC.
+  /// When false it means protocol level CRCs will be generated automatically / validated and stripped as required.
+  @$pb.TagNumber(7)
+  $core.bool get explicitCrc => $_getBF(6);
+  @$pb.TagNumber(7)
+  set explicitCrc($core.bool value) => $_setBool(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasExplicitCrc() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearExplicitCrc() => $_clearField(7);
+
+  /// If set indicates a framing error occurred
+  @$pb.TagNumber(8)
+  $core.bool get framingError => $_getBF(7);
+  @$pb.TagNumber(8)
+  set framingError($core.bool value) => $_setBool(7, value);
+  @$pb.TagNumber(8)
+  $core.bool hasFramingError() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearFramingError() => $_clearField(8);
+
+  /// If set indicates a parity error occurred
+  @$pb.TagNumber(9)
+  $core.bool get parityError => $_getBF(8);
+  @$pb.TagNumber(9)
+  set parityError($core.bool value) => $_setBool(8, value);
+  @$pb.TagNumber(9)
+  $core.bool hasParityError() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearParityError() => $_clearField(9);
+
+  /// If set indicates a CRC error occurred
+  @$pb.TagNumber(10)
+  $core.bool get crcError => $_getBF(9);
+  @$pb.TagNumber(10)
+  set crcError($core.bool value) => $_setBool(9, value);
+  @$pb.TagNumber(10)
+  $core.bool hasCrcError() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearCrcError() => $_clearField(10);
 }
 
 class EmulationShortcut extends $pb.GeneratedMessage {
@@ -520,6 +720,7 @@ class Reconnect extends $pb.GeneratedMessage {
     $core.Iterable<$core.List<$core.int>>? aidList,
     $core.Iterable<EmulationShortcut>? shortcuts,
     $core.bool? forceFlushShortcuts,
+    $core.int? baudRate,
   }) {
     final result = create();
     if (uid != null) result.uid = uid;
@@ -528,6 +729,7 @@ class Reconnect extends $pb.GeneratedMessage {
     if (shortcuts != null) result.shortcuts.addAll(shortcuts);
     if (forceFlushShortcuts != null)
       result.forceFlushShortcuts = forceFlushShortcuts;
+    if (baudRate != null) result.baudRate = baudRate;
     return result;
   }
 
@@ -554,6 +756,7 @@ class Reconnect extends $pb.GeneratedMessage {
     ..pPM<EmulationShortcut>(5, _omitFieldNames ? '' : 'shortcuts',
         subBuilder: EmulationShortcut.create)
     ..aOB(6, _omitFieldNames ? '' : 'forceFlushShortcuts')
+    ..aI(7, _omitFieldNames ? '' : 'baudRate')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -612,6 +815,16 @@ class Reconnect extends $pb.GeneratedMessage {
   $core.bool hasForceFlushShortcuts() => $_has(4);
   @$pb.TagNumber(6)
   void clearForceFlushShortcuts() => $_clearField(6);
+
+  /// If specified the baud rate should be updated with the provided value
+  @$pb.TagNumber(7)
+  $core.int get baudRate => $_getIZ(5);
+  @$pb.TagNumber(7)
+  set baudRate($core.int value) => $_setSignedInt32(5, value);
+  @$pb.TagNumber(7)
+  $core.bool hasBaudRate() => $_has(5);
+  @$pb.TagNumber(7)
+  void clearBaudRate() => $_clearField(7);
 }
 
 class RelayInfo extends $pb.GeneratedMessage {
@@ -629,6 +842,8 @@ class RelayInfo extends $pb.GeneratedMessage {
     $core.List<$core.int>? atqa,
     $core.List<$core.int>? sak,
     $core.List<$core.int>? ats,
+    $core.int? baudRate,
+    Protocol? protocol,
   }) {
     final result = create();
     if (supportedPayloadTypes != null)
@@ -645,6 +860,8 @@ class RelayInfo extends $pb.GeneratedMessage {
     if (atqa != null) result.atqa = atqa;
     if (sak != null) result.sak = sak;
     if (ats != null) result.ats = ats;
+    if (baudRate != null) result.baudRate = baudRate;
+    if (protocol != null) result.protocol = protocol;
     return result;
   }
 
@@ -686,6 +903,9 @@ class RelayInfo extends $pb.GeneratedMessage {
         12, _omitFieldNames ? '' : 'sak', $pb.PbFieldType.OY)
     ..a<$core.List<$core.int>>(
         13, _omitFieldNames ? '' : 'ats', $pb.PbFieldType.OY)
+    ..aI(14, _omitFieldNames ? '' : 'baudRate')
+    ..aE<Protocol>(15, _omitFieldNames ? '' : 'protocol',
+        enumValues: Protocol.values)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -825,6 +1045,28 @@ class RelayInfo extends $pb.GeneratedMessage {
   $core.bool hasAts() => $_has(12);
   @$pb.TagNumber(13)
   void clearAts() => $_clearField(13);
+
+  /// Indicates the baud rate in use for UART-based ConnectionTypes such as CONNECTION_TYPE_UART and CONNECTION_TYPE_OSDP.
+  /// If a baud rate is indicated here, relays should support renegotiating the baud rate via a Reconnect payload
+  @$pb.TagNumber(14)
+  $core.int get baudRate => $_getIZ(13);
+  @$pb.TagNumber(14)
+  set baudRate($core.int value) => $_setSignedInt32(13, value);
+  @$pb.TagNumber(14)
+  $core.bool hasBaudRate() => $_has(13);
+  @$pb.TagNumber(14)
+  void clearBaudRate() => $_clearField(14);
+
+  /// Optional protocol indicator. This will only be present when dealing with native NFC or contact interfaces
+  /// PC/SC readers generally will not specify this as PC/SC commands would be used instead to determine details on the protocols
+  @$pb.TagNumber(15)
+  Protocol get protocol => $_getN(14);
+  @$pb.TagNumber(15)
+  set protocol(Protocol value) => $_setField(15, value);
+  @$pb.TagNumber(15)
+  $core.bool hasProtocol() => $_has(14);
+  @$pb.TagNumber(15)
+  void clearProtocol() => $_clearField(15);
 }
 
 class RequestRelayDiscovery extends $pb.GeneratedMessage {
@@ -1046,7 +1288,7 @@ class RelayDiscoveryEncrypted extends $pb.GeneratedMessage {
   void clearRelayPublicKey() => $_clearField(2);
 
   /// encrypted_relay_discovery contains an encrypted RelayDiscovery message encrypted with AES128-GCM using keys
-  /// negotiated with ECDH X5519
+  /// negotiated with ECDH X25519
   @$pb.TagNumber(3)
   $core.List<$core.int> get encryptedRelayDiscovery => $_getN(2);
   @$pb.TagNumber(3)

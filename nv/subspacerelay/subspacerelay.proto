@@ -4,6 +4,9 @@ package nv.subspacerelay;
 
 option go_package = "github.com/nvx/subspace-relay;subspacerelaypb";
 
+// Message is the primary top level wrapper message that is exchanged between relays and controllers.
+// Under MQTT Message is serialised and encrypted in to/from-relay topics, and plaintext in broadcast topics for discovery.
+// Under simpler protocols that do not support topics and headers the Frame message should be used as an encapsulating layer.
 message Message {
   oneof message {
     // Payloads exchanged between a relay and a controller
@@ -50,23 +53,67 @@ message Message {
   }
 }
 
+// Frame is used to encapsulate Message (either plaintext or encrypted) across simple transports such as raw UARTs
+// If note Frame is not used when using higher level transports such as MQTT as the functionality of that transport is used instead
+// When sent over the wire a 16bit CRCA (as used in 14443A) over the serialised Frame bytes and appended
+// The result should then be encapsulated with COBS (Consistent Overhead Byte Stuffing)
+message Frame {
+  oneof message {
+    // If encryption is used, plaintext_message will only be used for discovery if enabled
+    Message plaintext_message = 1;
+    bytes encrypted_message = 2;
+  }
+  // endpoint is optional, if supported should match the semantics of the MQTT client-id as used in to/from-relay topic names
+  string endpoint = 3;
+  // correlation_data is optional and analogous to the MQTT RPC correlation data for rpc style messaging
+  bytes correlation_data = 4;
+}
+
 enum PayloadType {
   PAYLOAD_TYPE_UNSPECIFIED = 0;
-  // Relay device is attached to a HID reader or SAM and can exchange Artemis payloads
+  // Relay device is attached to a HID reader or SAM and can exchange Artemis payloads.
+  // Payloads should start with the 6 byte routing header followed by the ASN.1 payload
+  // This payload type is usually strict request-reply RPC-style with one RPC from the controller resulting in a single reply from the relay.
   PAYLOAD_TYPE_ARTEMIS = 1;
   // Relay device is attached to a Proxmark3 with the cardhopper standalone mode
   // This can be used to emulate a 14443a-4 card or act as a 14443a-4 reader
   // Payload is raw cardhopper frame
+  // This payload type does not usually follow RPC-style messaging
   PAYLOAD_TYPE_CARDHOPPER = 2;
-  // Relay device is attached to a PCSC-like reader and can exchange APDUs to a smart card
+  // Relay device is attached to a PCSC-like or NFC reader and can exchange APDUs to a smart card
   // This is most commonly used with CONNECTION_TYPE_PCSC, but may also be used with CONNECTION_TYPE_NFC and
   // CONNECTION_TYPE_BLE when acting as a reader
+  // This payload type is usually strict request-reply RPC-style with one RPC from the controller resulting in a single reply from the relay.
   PAYLOAD_TYPE_PCSC_READER = 3;
-  // Relay device is attached to a PCSC-like reader that supports control commands
+  // Relay device is attached to a PCSC reader that supports PCSC control commands
   // This is normally used with CONNECTION_TYPE_PCSC or CONNECTION_TYPE_PCSC_DIRECT
+  // This payload type is usually strict request-reply RPC-style with one RPC from the controller resulting in a single reply from the relay.
   PAYLOAD_TYPE_PCSC_READER_CONTROL = 5;
   // Relay device is emulating a smart card and can respond to APDUs from a reader
+  // This payload type is usually strict request-reply RPC-style with one RPC from the relay resulting in a single reply from the controller.
   PAYLOAD_TYPE_PCSC_CARD = 4;
+  // Relay is one or more OSDP Peripheral Devices (PD), possibly connected on a shared bus.
+  // Payload should start with OSDP SOM 0x53 byte and end with the the CRC16.
+  // Note this does not include any preamble, most implementations send a 0xFF before the SOM to meet OSDP timing spec
+  // This payload type is usually strict request-reply RPC-style with one RPC from the controller resulting in a single reply from the relay.
+  PAYLOAD_TYPE_OSDP_PD = 6;
+  // Relay is an OSDP Control Panel (CP).
+  // Payload should start with OSDP SOM 0x53 byte and end with the the CRC16.
+  // Note this does not include any preamble, most implementations send a 0xFF before the SOM to meet OSDP timing spec
+  // Due to OSDP timings if the relay is connected to a subspace relay naive device synthetic PD busy replies (osdp_BUSY) may be
+  // synthesised by the relay to prevent the CP from timing out while waiting.
+  // This payload type is usually strict request-reply RPC-style with one RPC from the relay resulting in a single reply from the controller.
+  PAYLOAD_TYPE_OSDP_DEVICE = 7;
+  // Relay hosts a device that can exchange Proxmark client-device rpc frames
+  // Payloads to the relay should start with the preamble magic ("PM3a") and end with the postamble magic ("a3")
+  // Payloads from the relay should start with the preamble magic ("PM3b") and end with the postamble magic ("b3")
+  // This payload type does not usually follow RPC-style messaging
+  PAYLOAD_TYPE_PROXMARK_DEVICE = 8;
+  // Relay hosts a proxmark client
+  // Payloads to the relay should start with the preamble magic ("PM3b") and end with the postamble magic ("b3")
+  // Payloads from the relay should start with the preamble magic ("PM3a") and end with the postamble magic ("a3")
+  // This payload type does not usually follow RPC-style messaging
+  PAYLOAD_TYPE_PROXMARK_CLIENT = 9;
 }
 
 enum ConnectionType {
@@ -83,8 +130,22 @@ message Payload {
   bytes payload = 1;
   PayloadType payload_type = 2;
   uint32 sequence = 3;
-  // control is used for PCSC control codes, only uint16 values are valid
+  // control is used for PCSC control codes for PAYLOAD_TYPE_PCSC_READER_CONTROL payloads, only uint16 values are valid
   optional uint32 control = 4;
+  // Number of valid bits in the last byte. 0 means all bits are valid.
+  uint32 num_bits = 5;
+  // When true for relevant protocols this flag indicates the payload contains explicit parity bits.
+  // When false it means parity bits will be generated automatically / validated and stripped as required.
+  bool explicit_parity = 6;
+  // When true for relevant protocols this flag indicates the payload contains an explicit CRC.
+  // When false it means protocol level CRCs will be generated automatically / validated and stripped as required.
+  bool explicit_crc = 7;
+  // If set indicates a framing error occurred
+  bool framing_error = 8;
+  // If set indicates a parity error occurred
+  bool parity_error = 9;
+  // If set indicates a CRC error occurred
+  bool crc_error = 10;
 }
 
 message EmulationShortcut {
@@ -123,6 +184,8 @@ message Reconnect {
   repeated EmulationShortcut shortcuts = 5;
   // force flush all shortcuts, even those with persist_reconnect set to true
   bool force_flush_shortcuts = 6;
+  // If specified the baud rate should be updated with the provided value
+  int32 baud_rate = 7;
 }
 
 message RelayInfo {
@@ -148,6 +211,23 @@ message RelayInfo {
   bytes sak = 12;
   // ats should include the Tl length byte, but not the CRC16
   bytes ats = 13;
+  // Indicates the baud rate in use for UART-based ConnectionTypes such as CONNECTION_TYPE_UART and CONNECTION_TYPE_OSDP.
+  // If a baud rate is indicated here, relays should support renegotiating the baud rate via a Reconnect payload
+  int32 baud_rate = 14;
+  // Optional protocol indicator. This will only be present when dealing with native NFC or contact interfaces
+  // PC/SC readers generally will not specify this as PC/SC commands would be used instead to determine details on the protocols
+  Protocol protocol = 15;
+}
+
+enum Protocol {
+  PROTOCOL_UNSPECIFIED = 0;
+  PROTOCOL_14443A_4 = 1;
+  PROTOCOL_14443B_4 = 2;
+  PROTOCOL_14443A_3 = 3;
+  PROTOCOL_FELICA = 4;
+  PROTOCOL_15693 = 5;
+  PROTOCOL_7816_T0 = 6;
+  PROTOCOL_7816_T1 = 7;
 }
 
 message RequestRelayDiscovery {
@@ -169,7 +249,7 @@ message RelayDiscoveryEncrypted {
   // the relay public key should be randomly generated each time a discovery request is received
   bytes relay_public_key = 2;
   // encrypted_relay_discovery contains an encrypted RelayDiscovery message encrypted with AES128-GCM using keys
-  // negotiated with ECDH X5519
+  // negotiated with ECDH X25519
   bytes encrypted_relay_discovery = 3;
 }
 
