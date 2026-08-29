@@ -1,3 +1,8 @@
+## v1.0.12
+
+* Add Frame message type to support simpler non-MQTT transports.
+* Add additional payload types, protocol enum, and flags to better support non-14443 part4 relays.
+
 ## v1.0.11
 
 * Tweak RequestRelayInfo and Disconnect messages to not be the Empty well known type
@@ -5,7 +10,7 @@
 
 ## v1.0.10
 
-* Update codegen, now uses well known types from protobuf package
+* Update codegen, now uses well known types from protobuf package7
 * Bump protobuf dependency to 6.0.0
 
 ## v1.0.9
